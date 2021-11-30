@@ -33,7 +33,6 @@ export class PostsService {
     const allArticles = await getRepository(PostsEntity).createQueryBuilder(
       'post',
     );
-
     allArticles.where('1 = 1');
     allArticles.orderBy('post.create_time', 'DESC');
     const count = await allArticles.getCount();
@@ -42,5 +41,12 @@ export class PostsService {
     allArticles.offset(pageSize * (pageNum - 1));
     const posts = await allArticles.getMany();
     return { list: posts, count };
+  }
+
+  // 查找指定文章
+  async findById(id): Promise<PostsEntity> {
+    const result = await this.postsRepository.findOne(id);
+    if (!result) throw new HttpException('文章不存在', HttpStatus.BAD_REQUEST);
+    return result;
   }
 }
