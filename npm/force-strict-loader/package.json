@@ -1,0 +1,10 @@
+{
+  "name": "force-strict-loader",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "loader-utils": "^2.0.0",
+    "source-map": "^0.7.3"
+  }
+}

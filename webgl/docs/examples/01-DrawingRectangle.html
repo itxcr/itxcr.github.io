@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>画一个蓝色的矩形 rectangle</title>
+</head>
+<body onload="main()">
+<canvas id="example" width="400" height="400">
+    请使用支持 "canvas" 的浏览器
+</canvas>
+<script>
+    function main() {
+        // 获取canvas元素
+        const canvas = document.getElementById('example')
+        if (!canvas) return
+        // 获取上下文
+        const ctx = canvas.getContext('2d')
+        // 设置填充色为蓝色
+        ctx.fillStyle = `rgba(0, 0, 255, 1.0)`
+        // 用这个颜色绘制矩形
+        ctx.fillRect(120, 50, 150, 150)
+    }
+    
+</script>
+</body>
+</html>
