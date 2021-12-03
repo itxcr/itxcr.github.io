@@ -1,4 +1,4 @@
-# chat
+# vue3study
 
 ## Project setup
 ```
