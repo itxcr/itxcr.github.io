@@ -33,7 +33,7 @@ module.exports = {
     port: 8888,
     proxy: {
       '/api': {
-        target: `https://atlantide.top:18081`,
+        target: `https://39.106.167.191:18081`,
         ws: true,
         changeOrigin: true,
         pathRewrite: {
@@ -41,7 +41,7 @@ module.exports = {
         },
       },
       'socket.io': {
-        target: `https://atlantide.top:18081`,
+        target: `https://39.106.167.191:18081`,
         ws: true,
         changeOrigin: true,
       },

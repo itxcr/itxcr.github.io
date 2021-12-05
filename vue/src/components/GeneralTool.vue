@@ -64,12 +64,12 @@
           class='recommend'
           @click="
             setBackground(
-              'https://itxcr.com:56999/public/imgs/wallhaven-rdjw2j_3840x2880.png'
+              '39.106.167.191:19000/public/images/wallhaven-rdjw2j_3840x2880.png'
             )
           "
         >
           <img
-            src='https://itxcr.com:56999/public/imgs/wallhaven-rdjw2j_3840x2880.png'
+            src='39.106.167.191:19000/public/images/wallhaven-rdjw2j_3840x2880.png'
             alt=''
           />
           <span class='text'>默认</span>
@@ -78,11 +78,11 @@
         <div
           class='recommend'
           @click="
-            setBackground('https://itxcr.com:56999/public/imgs/wallhaven-o36zv9_3840x2880.png')
+            setBackground('39.106.167.191:19000/public/images/wallhaven-o36zv9_3840x2880.png')
           "
         >
           <img
-            src='https://itxcr.com:56999/public/imgs/wallhaven-o36zv9_3840x2880.png'
+            src='39.106.167.191:19000/public/images/wallhaven-o36zv9_3840x2880.png'
             alt='' />
           <span class='text'>背景1</span>
         </div>
@@ -91,20 +91,20 @@
           class='recommend'
           @click="
             setBackground(
-              'https://itxcr.com:56999/public/imgs/wallhaven-y8853x_3840x2160.png'
+              '39.106.167.191:19000/public/images/wallhaven-y8853x_3840x2160.png'
             )
           "
         >
           <img
-            src='https://itxcr.com:56999/public/imgs/wallhaven-y8853x_3840x2160.png'
+            src='39.106.167.191:19000/public/images/wallhaven-y8853x_3840x2160.png'
             alt=''
           />
           <span class='text'>背景2</span>
         </div>
 
         <div class='recommend'
-             @click="setBackground('https://itxcr.com:56999/public/imgs/wallhaven-729zz9_3840x2160.png')">
-          <img src='https://itxcr.com:56999/public/imgs/wallhaven-729zz9_3840x2160.png' alt='' />
+             @click="setBackground('39.106.167.191:19000/public/images/wallhaven-729zz9_3840x2160.png')">
+          <img src='39.106.167.191:19000/public/images/wallhaven-729zz9_3840x2160.png' alt='' />
           <span class='text'>背景3</span>
         </div>
 
@@ -112,20 +112,20 @@
           class='recommend'
           @click="
             setBackground(
-              'https://itxcr.com:56999/public/imgs/wallhaven-v9p1dl_3840x2160.png'
+              '39.106.167.191:19000/public/images/wallhaven-v9p1dl_3840x2160.png'
             )
           "
         >
           <img
-            src='https://itxcr.com:56999/public/imgs/wallhaven-v9p1dl_3840x2160.png'
+            src='39.106.167.191:19000/public/images/wallhaven-v9p1dl_3840x2160.png'
             alt=''
           />
           <span class='text'>背景4</span>
         </div>
 
         <div class='recommend'
-             @click="setBackground('https://itxcr.com:56999/public/imgs/wallhaven-72pqze_3840x2160.png')">
-          <img src='https://itxcr.com:56999/public/imgs/wallhaven-72pqze_3840x2160.png' alt='' />
+             @click="setBackground('39.106.167.191:19000/public/images/wallhaven-72pqze_3840x2160.png')">
+          <img src='39.106.167.191:19000/public/images/wallhaven-72pqze_3840x2160.png' alt='' />
           <span class='text'>背景5</span>
         </div>
 
