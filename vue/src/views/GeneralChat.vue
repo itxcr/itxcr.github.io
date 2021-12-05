@@ -1,26 +1,38 @@
 <template>
-  <div class='chat' :style="{'--bg-image': `url(${background})`}">
-    <div class='chat-part1' v-if='visibleTool'>
-      <general-tool @logout='logout'></general-tool>
+  <div class="chat" :style="{ '--bg-image': `url(${background})` }">
+    <div class="chat-part1" v-if="visibleTool">
+      <general-tool @logout="logout"></general-tool>
     </div>
 
-    <div class='chat-part2'>
-      <general-search @addGroup='addGroup' @joinGroup='joinGroup' @addFriend='addFriend'
-                      @setActiveRoom='setActiveRoom' />
-      <general-room @setActiveRoom='setActiveRoom' />
+    <div class="chat-part2">
+      <general-search @addGroup="addGroup" @joinGroup="joinGroup" @addFriend="addFriend" @setActiveRoom="setActiveRoom" />
+      <general-room @setActiveRoom="setActiveRoom" />
     </div>
-    <general-join @register='handleRegister' @login='handleLogin' :showModal='showModal' />
+    <div class="chat-part3">
+      <a-icon class="chat-team" type="message" @click="toggleDrawer" />
+      <div class="chat-tool">
+        <a-icon type="menu-fold" @click="toggleTool" v-if="visibleTool" />
+        <a-icon type="menu-unfold" @click="toggleTool" v-else />
+      </div>
+      <genal-message v-if="activeRoom"></genal-message>
+    </div>
+    <!--      <a-drawer placement="left" :closable="false" :visible="visibleDrawer" @close="toggleDrawer" style="height:100%">-->
+    <!--        <div class="chat-drawer">-->
+    <!--          <genal-search @addGroup="addGroup" @joinGroup="joinGroup" @addFriend="addFriend" @setActiveRoom="setActiveRoom"> </genal-search>-->
+    <!--          <genal-room @setActiveRoom="setActiveRoom"></genal-room>-->
+    <!--        </div>-->
+    <!--      </a-drawer>-->
+    <general-join @register="handleRegister" @login="handleLogin" :showModal="showModal" />
   </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 import GeneralJoin from '@/components/GeneralJoin.vue'
 import GeneralTool from '@/components/GeneralTool.vue'
 import GeneralSearch from '@/components/GeneralSearch.vue'
 import GeneralRoom from '@/components/GeneralRoom.vue'
-
 
 const appModule = namespace('app')
 const chatModule = namespace('chat')
@@ -132,7 +144,7 @@ export default class GeneralChat extends Vue {
 }
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .chat {
   font-size: 16px;
   z-index: 999;
