@@ -1,31 +1,25 @@
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/'
-    : '/',
-  chainWebpack: config => {
+  publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
+  chainWebpack: (config) => {
     config.module
       .rule('images')
       .use('url-loader')
       .loader('url-loader')
-      .tap(options => Object.assign(options, { limit: 10240 }))
+      .tap((options) => Object.assign(options, { limit: 10240 }))
 
     if (process.env.NODE_ENV === 'production') {
       // 为生产环境修改配置...
-      config
-        .plugin('html')
-        .tap(args => {
-          args[0].title = 'xcr-pro'
-          return args // [/* 传递给 html-webpack-plugin's 构造函数的新参数 */]
-        })
+      config.plugin('html').tap((args) => {
+        args[0].title = 'xcr-pro'
+        return args // [/* 传递给 html-webpack-plugin's 构造函数的新参数 */]
+      })
     } else {
       // 为开发环境修改配置...
-      config
-        .plugin('html')
-        .tap(args => {
-          args[0].title = 'xcr-dev'
-          args[0].bodyName = 'xcr-Body'
-          return args // [/* 传递给 html-webpack-plugin's 构造函数的新参数 */]
-        })
+      config.plugin('html').tap((args) => {
+        args[0].title = 'xcr-dev'
+        args[0].bodyName = 'xcr-Body'
+        return args // [/* 传递给 html-webpack-plugin's 构造函数的新参数 */]
+      })
     }
   },
   devServer: {
@@ -47,6 +41,5 @@ module.exports = {
       },
     },
   },
-  publicPath: '/',
   productionSourceMap: false,
 }
