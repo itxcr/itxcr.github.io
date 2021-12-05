@@ -14,14 +14,14 @@
         <a-icon type="menu-fold" @click="toggleTool" v-if="visibleTool" />
         <a-icon type="menu-unfold" @click="toggleTool" v-else />
       </div>
-      <genal-message v-if="activeRoom"></genal-message>
+      <general-message v-if="activeRoom"></general-message>
     </div>
-    <!--      <a-drawer placement="left" :closable="false" :visible="visibleDrawer" @close="toggleDrawer" style="height:100%">-->
-    <!--        <div class="chat-drawer">-->
-    <!--          <genal-search @addGroup="addGroup" @joinGroup="joinGroup" @addFriend="addFriend" @setActiveRoom="setActiveRoom"> </genal-search>-->
-    <!--          <genal-room @setActiveRoom="setActiveRoom"></genal-room>-->
-    <!--        </div>-->
-    <!--      </a-drawer>-->
+    <a-drawer placement="left" :closable="false" :visible="visibleDrawer" @close="toggleDrawer" style="height: 100%">
+      <div class="chat-drawer">
+        <general-search @addGroup="addGroup" @joinGroup="joinGroup" @addFriend="addFriend" @setActiveRoom="setActiveRoom"> </general-search>
+        <general-room @setActiveRoom="setActiveRoom"></general-room>
+      </div>
+    </a-drawer>
     <general-join @register="handleRegister" @login="handleLogin" :showModal="showModal" />
   </div>
 </template>
@@ -33,6 +33,7 @@ import GeneralJoin from '@/components/GeneralJoin.vue'
 import GeneralTool from '@/components/GeneralTool.vue'
 import GeneralSearch from '@/components/GeneralSearch.vue'
 import GeneralRoom from '@/components/GeneralRoom.vue'
+import GeneralMessage from '@/components/GeneralMessage.vue'
 
 const appModule = namespace('app')
 const chatModule = namespace('chat')
@@ -42,6 +43,7 @@ const chatModule = namespace('chat')
     GeneralTool,
     GeneralSearch,
     GeneralRoom,
+    GeneralMessage,
   },
 })
 export default class GeneralChat extends Vue {

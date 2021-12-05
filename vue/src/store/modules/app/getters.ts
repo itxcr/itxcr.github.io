@@ -13,8 +13,11 @@ const getters: GetterTree<AppState, RootState> = {
     state.user = JSON.parse(user)
     return state.user
   },
-  device(state) {
-    return state.device
+  // device(state) {
+  //   return state.device
+  // },
+  mobile(state) {
+    return state.mobile
   },
   background(state) {
     if (localStorage.getItem('background')) return localStorage.getItem('background')

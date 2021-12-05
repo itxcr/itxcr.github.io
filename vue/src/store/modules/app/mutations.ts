@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import { AppState } from '@/store/modules/app/state'
-import { CLEAR_USER, SET_BACKGROUND, SET_DEVICE, SET_TOKEN, SET_USER } from '@/store/modules/app/mutation-types'
+import { CLEAR_USER, SET_BACKGROUND, SET_MOBILE, SET_TOKEN, SET_USER } from '@/store/modules/app/mutation-types'
 import cookie from 'js-cookie'
 
 const mutations: MutationTree<AppState> = {
@@ -24,9 +24,12 @@ const mutations: MutationTree<AppState> = {
     cookie.set('user', '')
     cookie.set('token', '')
   },
-  [SET_DEVICE](state, payload) {
-    state.device = payload
-    cookie.set('device', JSON.stringify(payload))
+  // [SET_DEVICE](state, payload) {
+  //   state.device = payload
+  //   cookie.set('device', JSON.stringify(payload))
+  // },
+  [SET_MOBILE](state, payload: boolean) {
+    state.mobile = payload
   },
   [SET_BACKGROUND](state, payload) {
     state.background = payload

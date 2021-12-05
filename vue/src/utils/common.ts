@@ -1,7 +1,7 @@
-import { AxiosResponse } from 'axios'
 import Vue from 'vue'
 
-export function processReturn(res: AxiosResponse<ServerRes>) {
+// export function processReturn(res: AxiosResponse<ServerRes>) {
+export function processReturn(res: any) {
   // code 0:成功 1:错误 2:后端报错
   let { code, msg, data } = res.data
   if (code) {
@@ -30,7 +30,6 @@ export function isUrl(text: string) {
   const UrlReg = new RegExp(/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/)
   return UrlReg.test(text)
 }
-
 
 // 消息时间格式化
 export function formatTime(time: number) {
