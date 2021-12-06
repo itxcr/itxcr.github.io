@@ -17,10 +17,10 @@ address varchar(35)
 cursor.execute(sql1)
 cursor.execute(sql2)
 fake = Faker("zh-CN")
-for i in range(10):
+for i in range(100):
     sql = """insert into faker_user(username,password,address) 
-    values('%s','%s','%s')""" % (fake.user_name(), fake.password(special_chars=False), fake.address())
-    print('姓名:' + fake.user_name() + '|密码:' + fake.password(special_chars=False) + '|地址:' + fake.address())
+    values('%s','%s','%s')""" % (fake.name(), fake.password(special_chars=False), fake.address())
+    print('姓名:' + fake.name() + '|密码:' + fake.password(special_chars=False) + '|地址:' + fake.address())
     cursor.execute(sql)
 
 conn.commit()
