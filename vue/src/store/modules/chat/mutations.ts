@@ -2,11 +2,20 @@ import { MutationTree } from 'vuex'
 import { ChatState } from '@/store/modules/chat/state'
 import {
   ADD_FRIEND_MESSAGE,
-  ADD_GROUP_MESSAGE, ADD_UNREAD_GATHER, DEL_FRIEND, DEL_GROUP, LOSE_UNREAD_GATHER,
-  SET_ACTIVE_GROUP_USER, SET_ACTIVE_ROOM,
-  SET_DROPPED, SET_FRIEND_GATHER, SET_FRIEND_MESSAGES,
-  SET_GROUP_GATHER, SET_GROUP_MESSAGES,
-  SET_SOCKET, SET_USER_GATHER,
+  ADD_GROUP_MESSAGE,
+  ADD_UNREAD_GATHER,
+  DEL_FRIEND,
+  DEL_GROUP,
+  LOSE_UNREAD_GATHER,
+  SET_ACTIVE_GROUP_USER,
+  SET_ACTIVE_ROOM,
+  SET_DROPPED,
+  SET_FRIEND_GATHER,
+  SET_FRIEND_MESSAGES,
+  SET_GROUP_GATHER,
+  SET_GROUP_MESSAGES,
+  SET_SOCKET,
+  SET_USER_GATHER,
 } from '@/store/modules/chat/mutation-types'
 import { DEFAULT_GROUP } from '@/config'
 import Vue from 'vue'
@@ -50,6 +59,7 @@ const mutations: MutationTree<ChatState> = {
   [ADD_FRIEND_MESSAGE](state, payload: FriendMessage) {
     // @ts-ignore
     let userId = this.getters['app/user'].userId
+    console.log(userId)
     if (payload.friendId === userId) {
       if (state.friendGather[payload.userId].messages) {
         state.friendGather[payload.userId].messages!.push(payload)
@@ -68,7 +78,7 @@ const mutations: MutationTree<ChatState> = {
   // 设置私聊记录
   [SET_FRIEND_MESSAGES](state, payload: FriendMessage[]) {
     // @ts-ignore
-    let userId = this.getters('app/user').userId
+    let userId = this.getters['app/user'].userId
     if (payload && payload.length) {
       if (payload[0].friendId === userId) {
         Vue.set(state.friendGather[payload[0].userId], 'messages', payload)

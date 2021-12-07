@@ -1,12 +1,11 @@
 import Vue from 'vue'
 
-// export function processReturn(res: AxiosResponse<ServerRes>) {
+// 处理所有后端返回的数据
 export function processReturn(res: any) {
   // code 0:成功 1:错误 2:后端报错
   let { code, msg, data } = res.data
   if (code) {
-    Vue.prototype.$message.error(msg)
-    return
+    return Vue.prototype.$message.error(msg)
   }
   if (msg) {
     Vue.prototype.$message.success(msg)
@@ -34,7 +33,6 @@ export function isUrl(text: string) {
 // 消息时间格式化
 export function formatTime(time: number) {
   let moment = Vue.prototype.$moment
-  console.log(moment())
   // 大于昨天
   if (moment().add(-1, 'days').startOf('day') > time) {
     return moment(time).format('MM-DD HH:mm')
@@ -42,6 +40,10 @@ export function formatTime(time: number) {
   // 昨天
   if (moment().startOf('day') > time) {
     return `昨天 ${moment(time).format('HH:mm')}`
+  }
+  // 大于五分钟不显示秒
+  if (new Date().valueOf() > time + 300000) {
+    return moment(time).format('HH:mm')
   }
   return moment(time).format('HH:mm:ss')
 }
@@ -83,8 +85,7 @@ export function passwordVerify(password: string): boolean {
 }
 
 // 检测是否移动端
-export function isMobile(): boolean {
+export function isMobile() {
   let flag = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
-  if (flag && flag.length > 0) return true
-  return false
+  return flag && flag.length
 }

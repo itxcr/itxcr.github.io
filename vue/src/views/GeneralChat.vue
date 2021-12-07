@@ -52,7 +52,6 @@ export default class GeneralChat extends Vue {
   @appModule.Action('login') login!: Function
   @appModule.Action('register') register!: Function
   @appModule.Getter('background') background!: string
-  @appModule.Getter('device') device!: Device
 
   @chatModule.Getter('socket') socket: any
   @chatModule.Getter('userGather') userGather!: FriendGather
@@ -117,7 +116,6 @@ export default class GeneralChat extends Vue {
 
   // 添加好友
   addFriend(friendId: string) {
-    // console.log(this.user)
     this.socket.emit('addFriend', {
       userId: this.user.userId,
       friendId: friendId,

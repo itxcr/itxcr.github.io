@@ -1,7 +1,6 @@
 export interface AppState {
   user: User
   token: string
-  // device: Device
   mobile: boolean
   background: string
 }
@@ -16,15 +15,6 @@ const appState: AppState = {
   },
   token: '',
   mobile: false,
-  // device: {
-  //   engine: '',
-  //   engineVs: '',
-  //   platform: '',
-  //   supporter: '',
-  //   supporterVs: '',
-  //   system: '',
-  //   systemVs: '',
-  // },
   background: '',
 }
 

@@ -104,12 +104,10 @@ export default class GeneralInput extends Vue {
    */
   preSendMessage() {
     if (!this.text.trim()) {
-      this.$message.error('不能发送空消息!')
-      return
+      return this.$message.error('不能发送空消息!')
     }
     if (this.text.length > 220) {
-      this.$message.error('消息太长!')
-      return
+      return this.$message.error('消息太长!')
     }
     if (this.activeRoom.groupId) {
       this.sendMessage({ type: 'group', message: this.text, messageType: 'text' })

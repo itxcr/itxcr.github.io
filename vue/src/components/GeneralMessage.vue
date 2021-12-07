@@ -58,7 +58,6 @@ import GeneralInput from '@/components/GeneralInput.vue'
 export default class GeneralMessage extends Vue {
   @appModule.Getter('user') user!: User
   @appModule.Getter('mobile') mobile!: boolean
-
   @chatModule.State('activeRoom') activeRoom!: Group & Friend
   @chatModule.Getter('socket') socket: any
   @chatModule.Getter('dropped') dropped!: boolean

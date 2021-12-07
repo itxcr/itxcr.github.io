@@ -24,10 +24,6 @@ const mutations: MutationTree<AppState> = {
     cookie.set('user', '')
     cookie.set('token', '')
   },
-  // [SET_DEVICE](state, payload) {
-  //   state.device = payload
-  //   cookie.set('device', JSON.stringify(payload))
-  // },
   [SET_MOBILE](state, payload: boolean) {
     state.mobile = payload
   },

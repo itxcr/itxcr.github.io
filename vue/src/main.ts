@@ -8,12 +8,12 @@ Vue.config.productionTip = false
 
 // 引入 ant-design
 import './themes/ant-design'
+// 引入 moment
 import moment from 'moment'
-
 
 Vue.config.productionTip = false
 
-// 引入 moment
+// 设置 moment
 Vue.prototype.$moment = moment
 
 // 图片预览插件
@@ -21,7 +21,7 @@ import 'viewerjs/dist/viewer.css'
 Vue.use(Viewer, {
   defaultOptions: {
     navbar: false,
-    title: true,
+    title: false,
     toolbar: {
       zoomIn: 1,
       zoomOut: 1,
@@ -39,5 +39,5 @@ Vue.use(Viewer, {
 new Vue({
   router,
   store,
-  render: h => h(App),
+  render: (h) => h(App),
 }).$mount('#app')

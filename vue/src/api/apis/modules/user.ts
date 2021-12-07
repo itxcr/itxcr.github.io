@@ -47,6 +47,5 @@ export function setUserAvatar(params: FormData) {
  * @param params
  */
 export function deleteUser(params: any) {
-  console.log(params)
   return fetch.delete(`/user`, { params })
 }

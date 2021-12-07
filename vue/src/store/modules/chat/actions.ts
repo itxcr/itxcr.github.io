@@ -5,14 +5,7 @@ import { RootState } from '@/store'
 import io from 'socket.io-client'
 
 import Vue from 'vue'
-import {
-  ADD_FRIEND_MESSAGE,
-  ADD_GROUP_MESSAGE, ADD_UNREAD_GATHER, DEL_FRIEND, DEL_GROUP,
-  SET_ACTIVE_GROUP_USER, SET_ACTIVE_ROOM, SET_DROPPED, SET_FRIEND_GATHER, SET_FRIEND_MESSAGES,
-  SET_GROUP_GATHER,
-  SET_SOCKET,
-  SET_USER_GATHER,
-} from '@/store/modules/chat/mutation-types'
+import { ADD_FRIEND_MESSAGE, ADD_GROUP_MESSAGE, ADD_UNREAD_GATHER, DEL_FRIEND, DEL_GROUP, SET_ACTIVE_GROUP_USER, SET_ACTIVE_ROOM, SET_DROPPED, SET_FRIEND_GATHER, SET_FRIEND_MESSAGES, SET_GROUP_GATHER, SET_SOCKET, SET_USER_GATHER } from '@/store/modules/chat/mutation-types'
 import { DEFAULT_GROUP } from '@/config'
 
 const actions: ActionTree<ChatState, RootState> = {
@@ -21,7 +14,6 @@ const actions: ActionTree<ChatState, RootState> = {
     let user = rootState.app.user
     const socket = io(`/?userId=${user.userId}`, { reconnection: true })
     socket.on('connect', async () => {
-      console.log('连接成功')
       // 获取聊天室所需所有信息
       socket.emit('chatData', user)
       // 先保存好 socket 对象
@@ -30,12 +22,10 @@ const actions: ActionTree<ChatState, RootState> = {
 
     // 初始化事件监听
     socket.on('activeGroupUser', (data: any) => {
-      console.log('activeGroupUser', data)
       commit(SET_ACTIVE_GROUP_USER, data.data)
     })
 
     socket.on('addGroup', (res: ServerRes) => {
-      console.log('on addGroup', res)
       if (res.code) {
         return Vue.prototype.$message.error(res.msg)
       }
@@ -44,7 +34,6 @@ const actions: ActionTree<ChatState, RootState> = {
     })
 
     socket.on('joinGroup', async (res: ServerRes) => {
-      console.log('on JoinGroup', res)
       if (res.code) {
         return Vue.prototype.$message.error(res.msg)
       }
@@ -54,7 +43,6 @@ const actions: ActionTree<ChatState, RootState> = {
         commit(SET_USER_GATHER, newUser)
         return Vue.prototype.$message.info(`${newUser.username}加入群${group.groupName}`)
       } else {
-        console.log(state.groupGather, group.groupId)
         // 是用户自己 则加入到某个群
         if (!state.groupGather[group.groupId]) {
           commit(SET_GROUP_GATHER, group)
@@ -67,7 +55,6 @@ const actions: ActionTree<ChatState, RootState> = {
     })
 
     socket.on('joinGroupSocket', (res: ServerRes) => {
-      console.log('on joinGroupSocket', res)
       if (res.code) {
         return Vue.prototype.$message.error(res.msg)
       }
@@ -101,7 +88,6 @@ const actions: ActionTree<ChatState, RootState> = {
     })
 
     socket.on('groupMessage', (res: ServerRes) => {
-      console.log('on groupMessage', res)
       if (!res.code) {
         commit(ADD_GROUP_MESSAGE, res.data)
         let activeRoom = state.activeRoom
@@ -114,7 +100,6 @@ const actions: ActionTree<ChatState, RootState> = {
     })
 
     socket.on('addFriend', (res: ServerRes) => {
-      console.log('on addFriend', res)
       if (!res.code) {
         commit(SET_FRIEND_GATHER, res.data)
         commit(SET_USER_GATHER, res.data)
@@ -129,7 +114,6 @@ const actions: ActionTree<ChatState, RootState> = {
     })
 
     socket.on('joinFriendSocket', (res: ServerRes) => {
-      console.log('on joinFriendSocket', res)
       if (!res.code) {
         console.log('成功加入私聊房间')
       }
@@ -138,7 +122,6 @@ const actions: ActionTree<ChatState, RootState> = {
     socket.on('friendMessage', (res: ServerRes) => {
       if (!res.code) {
         if (res.data.friendId === user.userId || res.data.userId === user.userId) {
-          console.log('Add_Friend_MESSAGE', res.data)
           commit(ADD_FRIEND_MESSAGE, res.data)
           let activeRoom = state.activeRoom
           if (activeRoom && activeRoom.userId !== res.data.userId && activeRoom.userId !== res.data.friendId) {

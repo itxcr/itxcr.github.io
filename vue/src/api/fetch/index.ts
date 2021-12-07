@@ -7,7 +7,7 @@ const fetch: AxiosInstance = axios.create({
   baseURL: socketUrl,
   headers: {
     'Cache-Control': 'no-catch',
-    'Pragma': 'no-cache',
+    Pragma: 'no-cache',
   },
 })
 

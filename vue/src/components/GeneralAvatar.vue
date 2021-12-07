@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import * as api from '@/api/apis'
 import { namespace } from 'vuex-class'
 const chatModule = namespace('chat')
@@ -57,6 +57,7 @@ export default class GeneralAvatar extends Vue {
       did: userId,
     })
     let data = processReturn(res)
+    console.log(data, 'deleteUser')
   }
 
   _setActiveRoom(userId: string) {
