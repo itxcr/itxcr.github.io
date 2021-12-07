@@ -1,5 +1,5 @@
-const webpack = require('webpack');
-const CompressionWebpackPlugin = require('compression-webpack-plugin');
+const webpack = require('webpack')
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
 
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
@@ -27,7 +27,7 @@ module.exports = {
   },
   configureWebpack: (config) => {
     // 代码 gzip
-    const productionGzipExtensions = ['html', 'js', 'css'];
+    const productionGzipExtensions = ['html', 'js', 'css']
     config.plugins.push(
       new CompressionWebpackPlugin({
         filename: '[path].gz[query]',
@@ -36,15 +36,15 @@ module.exports = {
         threshold: 10240, // 只有大小大于该值的资源会被处理 10240
         minRatio: 0.8, // 只有压缩率小于这个值的资源才会被处理
         deleteOriginalAssets: false, // 删除原文件
-      })
-    );
+      }),
+    )
 
     // 不打包moment的语言包
-    config.plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/));
+    config.plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/))
 
     // 去除console
     if (process.env.NODE_ENV === 'production') {
-      config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true;
+      config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
     }
   },
   css: {
@@ -69,8 +69,8 @@ module.exports = {
     port: 8888,
     proxy: {
       '/api': {
-        target: `https://39.106.167.191:18081`,
-        // target: `http://127.0.0.1:18081`,
+        // target: `https://39.106.167.191:18081`,
+        target: `http://127.0.0.1:18081`,
         ws: true,
         changeOrigin: true,
         pathRewrite: {
@@ -78,8 +78,8 @@ module.exports = {
         },
       },
       'socket.io': {
-        target: `https://39.106.167.191:18081`,
-        // target: `http://127.0.0.1:18081`,
+        // target: `https://39.106.167.191:18081`,
+        target: `http://127.0.0.1:18081`,
         ws: true,
         changeOrigin: true,
       },

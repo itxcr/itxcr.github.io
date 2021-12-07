@@ -74,10 +74,14 @@ export default class GeneralChat extends Vue {
 
   // 登录
   async handleLogin(user: User) {
-    let res = await this.login(user)
-    if (res.user && res.token) {
-      // 进入系统事件
-      await this.handleJoin()
+    try {
+      let res = await this.login(user)
+      if (res && res.user && res.token) {
+        // 进入系统事件
+        await this.handleJoin()
+      }
+    } catch (e) {
+      console.log(e)
     }
   }
 
