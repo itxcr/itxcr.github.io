@@ -9,6 +9,19 @@ Nest 在这些常见的 Node.js 框架 (Express/Fastify) 之上提高了一个�
 - 原生支持TypeScript的框架
 - 可以基于`Express`也可以选择`fastify`, 如果你对`Express`非常熟练， 直接用它的API也是没问题的
 
+## 设置nestjs 设置不生成 spec
+
+```json
+// nest-cli.json
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "generateOptions": {
+    "spec": false
+  }
+}
+```
+
 ## 项目创建
 
 ```bash

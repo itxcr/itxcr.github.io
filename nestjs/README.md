@@ -59,12 +59,6 @@ Nest 提供了对底层平台（默认为 `Express`）的[**请求对象**](http
 | `@Ip()`                   | `req.ip`                          |
 | `@HostParam()`            | `req.hosts`                       |
 
-
-
-
-
-
-
 ### 数据库表结构设计
 
 ![sql](https://cdn.jsdelivr.net/gh/itxcr/oss/images/sql.png)

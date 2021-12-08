@@ -6,6 +6,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import envConfig from '../config/env';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostsEntity } from './posts/posts.entity';
+import { MinioModule } from './minio/minio.module';
+import { ConfigEnvModule } from './config-env/config-env.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -26,6 +29,9 @@ import { PostsEntity } from './posts/posts.entity';
       }),
     }),
     PostsModule,
+    MinioModule,
+    ConfigEnvModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],

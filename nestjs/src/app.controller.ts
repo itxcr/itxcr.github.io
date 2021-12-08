@@ -27,7 +27,6 @@ export class AppController {
 
   @Get()
   async getHello(): Promise<string> {
-    console.log(await this.create('123'));
     return this.appService.getHello();
   }
 
