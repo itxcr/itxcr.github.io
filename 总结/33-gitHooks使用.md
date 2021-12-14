@@ -426,6 +426,12 @@ npm run commit
          }
    ```
 
+### ESlint
+
+```
+yarn add eslint -D
+```
+
 ### Lint-staged
 
 Lint-staged是自动规范化项目第二重要的工具，主要功能为依次运行传入的命令数组，但是，约束命令的作用范围只会影响到git staged范围内的文件，即用git add 添加到待commit队列的文件，从而避免影响到其他文件，同时也能加快预处理脚本的速度。
