@@ -587,3 +587,267 @@ commitizen init cz-conventional-changelog --save-dev --save-exact
 
 ### JSDOC
 
+
+
+
+
+
+
+### 安装`eslint`和`prettier`及相关工具：
+
+```
+npm install --save-dev eslint prettier
+npm install --save-dev eslint-plugin-prettier eslint-config-prettier
+npm install --save-dev @typescript-eslint/parser  @typescript-eslint/eslint-plugin
+npm install --save-dev eslint-plugin-import
+npm install --save-dev eslint-import-resolver-typescript
+```
+
+其中除了`eslint`和`prettier`外的其他几个工具作用分别是：
+
+- `eslint-plugin-prettier`：将 prettier 的能力集成到 eslint 中, 按照 prettier 的规则检查代码规范性，并进行修复
+- `eslint-config-prettier`：让所有可能会与 prettier 规则存在冲突的 eslint rule 失效，并使用 prettier 的规则进行代码检查
+- `@typescript-eslint/parser`： 解析器，使 eslint 可以解析 ts 语法
+- `@typescript-eslint/eslint-plugin`：指定了 ts 代码规范的 plugin
+- `eslint-plugin-import`：对 ES6+ 的导入/导出语法进行 lint, 并防止文件路径和导入名称拼写错误的问题
+- `eslint-import-resolver-typescript`：这个插件为`eslint-plugin-import`添加了 ts 支持，详见[此处](https://www.npmjs.com/package/eslint-import-resolver-typescript)
+
+### 配置
+
+-  `.eslintrc.js`（或者`.eslingtrc`，`.eslintrc.json`）：
+
+  ```js
+  module.exports = {
+    env: {
+      browser: true,
+      node: true,
+      es6: true,
+    },
+    parser: '@typescript-eslint/parser', // 解析器
+    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'], // 使用 eslint 和 typescript-eslint 建议的规则
+    plugins: ['@typescript-eslint', 'prettier', 'import'], // 代码规范插件
+    rules: {
+      'prettier/prettier': 'error', // 不符合 prettier 规则的代码，要进行错误提示
+    },
+    settings: {
+      'import/parsers': {
+        '@typescript-eslint/parser': ['.ts', '.tsx'],
+      },
+      'import/resolver': {
+        typescript: {
+          project: 'tsconfig.json',
+        },
+      },
+    },
+  };
+  ```
+
+- 配置`.prettierrc.js`（或者`.prettierrc`，`.prettierrc.json`），常用规则如下：
+
+  ```js
+  module.exports = {
+    trailingComma: 'es5',
+    singleQuote: true,
+    semi: true,
+    tabWidth: 2,
+    printWidth: 80,
+  };
+  ```
+
+  如果需要还可以加上相应的`.eslintignore`和`.prettierignore`来忽略想要的目录/文件
+
+- 向`package.json`的`scripts`中添加命令：
+
+  ```json
+  {
+    "scripts": {
+      "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+      "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx ./ --fix"
+    }
+  }
+  ```
+
+  
+
+### 安装 husky
+
+1. `yarn add husky -D`
+
+2. 在`packgae.json`中添加prepare脚本
+
+   ```json
+   {
+     "scripts": {
+       "prepare": "husky install"
+     }
+   }
+   ```
+
+   prepare脚本会在`npm install`（不带参数）之后自动执行。也就是说当我们执行`npm install`安装完项目依赖后会执行 `husky install`命令，该命令会创建`.husky/`目录并指定该目录为`git hooks`所在的目录
+
+3. 添加`git hooks`，运行以下命令创建`git hooks`
+
+   `yarn husky add .husky/pre-commit "npm run lint"`
+
+   运行完该命令后我们会看到`.husky/`目录下新增了一个名为`pre-commit`的`shell`脚本。也就是说在执行`git commit`命令或者通过`git-cz`工具提交时，会先执行`pre-commit`这个脚本。`pre-commit`脚本内容如下：
+
+   ```shell
+   #!/bin/sh
+   . "$(dirname "$0")/_/husky.sh"
+   
+   npm run lint
+   ```
+
+   可以看到该脚本的功能就是执行`npm run lint`这个命令
+
+4. 注意
+
+   在项目中我们会使用`commit-msg`这个`git hook`来校验我们`commit`时添加的备注信息是否符合规范。在以前的我们通常是这样配置：
+
+   ```json
+   {
+     "husky": {
+       "hooks": {
+         "commit-msg": "commitlint -e $HUSKY_GIT_PARAMS" // 校验commit时添加的备注信息是否符合我们要求的规范
+       }
+     }
+   }
+   ```
+
+   在新版husky中`$HUSKY_GIT_PARAMS`这个变量不再使用了，取而代之的是`$1`。在新版`husky中`我们的`commit-msg`脚本内容如下：
+
+   ```shell
+   #!/bin/sh
+   . "$(dirname "$0")/_/husky.sh"
+   
+   #--no-install 参数表示强制npx使用项目中node_modules目录中的commitlint包
+   npx --no-install commitlint --edit $1
+   ```
+
+   - 添加`git hooks`
+
+     `yarn husky add .husky/commit-msg 'npx --no-install commitlint --edit "$1"' `
+
+### 安装 `lint-staged`
+
+1. `npm install --save-dev lint-staged`
+
+2.  在`package.json`中配置`lint-staged`：
+
+   在`package.json`中添加如下配置，配置表明在运行`lint-staged`的时候将只匹配`src`和`test`目录下的`ts`和`tsx`文件，我们可以根据自己项目的需要修改配置：
+
+   ```json
+   {
+     "lint-staged": {
+       "src/**/*.{ts,tsx}": [
+         "eslint"
+       ],
+       "test/**/*.{ts,tsx}": [
+         "eslint"
+       ]
+     }
+   }
+   ```
+
+   向`package.json`的`scripts`中添加命令：
+
+   ```json
+   {
+     "scripts": {
+       "lint-staged": "lint-staged"
+     }
+   }
+   ```
+
+3. 修改`.husky/pre-commit`脚本的内容：
+
+   将`.husky/pre-commit`脚本的内容改为`npm run lint-staged`
+
+   ```shell
+   #!/bin/sh
+   . "$(dirname "$0")/_/husky.sh"
+   
+   npm run lint-staged
+   ```
+
+   通过上面的步骤，就完成了`lint-staged`的配置，这个时候再进行 git 提交时，将只检查暂存区（`staged`）的文件，不会检查项目所有文件，加快了每次提交 lint 检查的速度，同时也不会被历史遗留问题影响。如下图：
+
+   ![lint-staged](https://cdn.jsdelivr.net/gh/itxcr/oss/images/202112151658457.png)
+
+### commitizen
+
+在 Angular 提交信息规范中，一个好的提交信息的结构应该如下所示：
+
+```
+<type>(<scope>): <subject>
+<BLANK LINE>
+<body>
+<BLANK LINE>
+<footer>
+```
+
+整个提交说明包括三部分：`header`页眉、`body`正文、`footer`页脚，在每个部分之间有一个空白行分隔，其中`header`部分是每次提交中必须包含的内容。
+
+- `header`
+  - `type`[类型](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#type)
+  - `scope`本次提交的[影响范围](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#scope)
+  - `subject`[主题](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#subject)，即对提交的一个简短描述
+- `body`
+  - 本地提交的详细描述，说明代码提交的详细说明
+- `footer`
+  - 主要包括本次提交的 BREAKING CHANGE（不兼容变更）和要关闭的 issue
+- 更加详细的内容请参考[Angular提交信息规范](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines)。
+
+`commitzen`就是这样一个工具，它可以提供可以选择的提交信息类别，快速生成符合规范的提交说明
+
+1. 先安装`commitizen`和`cz-conventional-changelog`：
+
+   `npm install --save-dev commitizen cz-conventional-changelog`
+
+   如果需要在项目中使用`commitizen`生成符合某个规范的提交说明，则需要使用对应的适配器，而`cz-conventional-changelog`就是符合AngularJS规范提交说明的`commitzen`适配器
+
+2. 在`package.json`中配置
+
+   在`package.json`中添加如下配置，配置指明了`cz`工具`commitizen`的适配器路径：
+
+   ```json
+   {
+     "config": {
+       "commitizen": {
+         "path": "node_modules/cz-conventional-changelog"
+       }
+     }
+   }
+   ```
+
+   向`package.json`的`scripts`中添加命令：
+
+   ```json
+   {
+     "scripts": {
+       "commit": "git-cz"
+     }
+   }
+   ```
+
+   这时我们就可以使用`npm run commit`来代替`git commit`进行提交了：
+
+   ![commitizen](https://cdn.jsdelivr.net/gh/itxcr/oss/images/202112151708118.png)
+
+3. 配置自定义提交信息规范
+
+   如果想定制项目的提交信息规范，可以使用`cz-customizable`适配器：`npm install --save-dev cz-customizable`
+
+   然后把`package.json`中配置的适配器路径修改为`cz-customizable`的路径：
+
+   ```json
+   {
+     "config": {
+       "commitizen": {
+         "path": "node_modules/cz-customizable"
+       }
+     }
+   }
+   ```
+
+   之后在根目录下新建一个`.cz-config.js`来配置自定义的规范，这里提供一个官方的示例[cz-config-EXAMPLE.js](https://github.com/leoforfree/cz-customizable/blob/master/cz-config-EXAMPLE.js)，修改里面字段、内容为自己想要的规范即可
