@@ -1,7 +1,14 @@
 // electron/preload.js
-
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
+const {ipcRenderer, contextBridge} = require("electron")
+let os = require('os')
+contextBridge.exposeInMainWorld("api", {
+    cpuCount: os.cpus().length,
+    getUsage: (args) => ipcRenderer.invoke('get-cpu-used')
+  }
+)
+
 window.addEventListener('DOMContentLoaded', () => {
   const replaceText = (selector, text) => {
     const element = document.getElementById(selector)

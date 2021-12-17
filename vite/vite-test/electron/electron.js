@@ -1,6 +1,8 @@
 // electron/electron.js
 const path = require('path');
 const { app, BrowserWindow } = require('electron');
+const si = require('systeminformation')
+const {ipcMain} = require('electron')
 
 const isDev = process.env.IS_DEV == "true" ? true : false;
 
@@ -9,6 +11,7 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
@@ -48,3 +51,8 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+ipcMain.handle("get-cpu-used", async (event, args) => {
+  let usage = await si.currentLoad()
+  return usage
+})
