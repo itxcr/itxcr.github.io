@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, ref, toRefs } from 'vue'
+import { defineComponent, PropType, reactive, ref, toRefs } from "vue"
 
 interface UserInfo {
   id: number
@@ -20,7 +20,7 @@ type Todo = {
 }
 
 export default defineComponent({
-  name: 'HelloWorld',
+  name: "HelloWorld",
   setup() {
     const data = reactive({
       todoList: [] as Todo[],
