@@ -4,27 +4,20 @@
   "author": "xcr",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "electron": "wait-on tcp:3000 && cross-env IS_DEV=true electron .",
     "electron:pack": "electron-builder --dir",
     "electron:dev": "concurrently -k \"cross-env BROWSER=none yarn dev\" \"yarn electron\"",
     "electron:builder": "electron-builder",
-    "build:for:electron": "vue-tsc --noEmit && cross-env ELECTRON=true vite build",
-    "app:build": "yarn build:for:electron && yarn electron:builder"
+    "build:for:electron": "cross-env ELECTRON=true vite build",
+    "electron:build": "yarn build:for:electron && yarn electron:builder"
   },
   "main": "electron/electron.js",
   "build": {
-    "appId": "com.my-website.my-app",
-    "productName": "MyApp",
-    "copyright": "Copyright © 2019 ${author}",
-    "mac": {
-      "category": "public.app-category.utilities"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    },
+    "appId": "com.xcr.conversion",
+    "productName": "Conversion",
+    "copyright": "Copyright © 2021 ${author}",
     "files": [
       "dist/**/*",
       "electron/**/*"
@@ -32,6 +25,37 @@
     "directories": {
       "buildResources": "assets",
       "output": "dist_electron"
+    },
+    "nsis": {
+      "shortcutName": "Conversion",
+      "oneClick": false,
+      "packElevateHelper": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "allowToChangeInstallationDirectory": true,
+      "warningsAsErrors": false,
+      "installerSidebar": "public/nsis3-metro-banner.bmp",
+      "uninstallerSidebar": "public/nsis3-metro-banner.bmp",
+      "installerIcon": "public/favicon.ico",
+      "uninstallerIcon": "public/favicon.ico"
+    },
+    "win": {
+      "icon": "public/favicon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "ia32"
+          ]
+        },
+        {
+          "target": "dir",
+          "arch": [
+            "ia32"
+          ]
+        }
+      ]
     }
   },
   "dependencies": {

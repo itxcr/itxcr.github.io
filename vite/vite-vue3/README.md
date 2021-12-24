@@ -143,7 +143,7 @@
 - 创建  .prettierrc.js 文件自定义 prettier 规则，保存规则后，重启编辑器的eslint服务以更新编辑器读取的配置文件
 
   ```json
-  // .prettierrc.json.json
+  // .prettierrc.json
   {
     "semi": false,
     "eslintIntegration": true,
@@ -174,3 +174,4 @@
   
   ```
 
+  
