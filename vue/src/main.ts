@@ -17,7 +17,7 @@ Vue.config.productionTip = false
 Vue.prototype.$moment = moment
 
 // 图片预览插件
-import 'viewerjs/dist/viewer.css'
+import '@/assets/css/viewer.css'
 Vue.use(Viewer, {
   defaultOptions: {
     navbar: false,

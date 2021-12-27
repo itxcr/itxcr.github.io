@@ -1,44 +1,25 @@
 <template>
-  <div class='room' v-if='chatArr.length'>
-    <div v-for='(chat, index) in chatArr' :key='(chat.userId || chat.groupId) + index'>
-      <div
-        v-if='chat.groupId'
-        class='room-card'
-        :class='{ active: activeRoom && activeRoom.groupId === chat.groupId }'
-        @click='changeActiveRoom(chat)'
-      >
-        <a-badge class='room-card-badge' :count='unReadGather[chat.groupId]' />
-        <img class='room-card-type' src='~@/assets/group.png' alt='' />
-        <div class='room-card-message'>
-          <div class='room-card-name'>{{ chat.groupName }}</div>
-          <div class='room-card-new' v-if='chat.messages'>
-            <div
-              class='text'
-              v-text='_parseText(chat.messages[chat.messages.length - 1].content)'
-              v-if="chat.messages[chat.messages.length - 1].messageType === 'text'"
-            ></div>
-            <div class='image' v-if="chat.messages[chat.messages.length - 1].messageType === 'image'">[图片]</div>
+  <div class="room" v-if="chatArr.length">
+    <div v-for="(chat, index) in chatArr" :key="(chat.userId || chat.groupId) + index">
+      <div v-if="chat.groupId" class="room-card" :class="{ active: activeRoom && activeRoom.groupId === chat.groupId }" @click="changeActiveRoom(chat)">
+        <a-badge class="room-card-badge" :count="unReadGather[chat.groupId]" />
+        <a-avatar class="room-card-type" alt="" style="background-color: rgba(125, 155, 255, 0.8)">Group</a-avatar>
+        <div class="room-card-message">
+          <div class="room-card-name">{{ chat.groupName }}</div>
+          <div class="room-card-new" v-if="chat.messages">
+            <div class="text" v-text="_parseText(chat.messages[chat.messages.length - 1].content)" v-if="chat.messages[chat.messages.length - 1].messageType === 'text'"></div>
+            <div class="image" v-if="chat.messages[chat.messages.length - 1].messageType === 'image'">[图片]</div>
           </div>
         </div>
       </div>
-      <div
-        v-else
-        class='room-card'
-        :class='{ active: activeRoom && !activeRoom.groupId && activeRoom.userId === chat.userId }'
-        @click='changeActiveRoom(chat)'
-      >
-        <a-badge class='room-card-badge' :count='unReadGather[chat.userId]' />
-        <img class='room-card-type' :src='friendGather[chat.userId].avatar'
-             :class='{ offLine: !activeUserGather.hasOwnProperty(chat.userId) }' alt='' />
-        <div class='room-card-message'>
-          <div class='room-card-name'>{{ chat.username }}</div>
-          <div class='room-card-new' v-if='chat.messages'>
-            <div
-              class='text'
-              v-text='_parseText(chat.messages[chat.messages.length - 1].content)'
-              v-if="chat.messages[chat.messages.length - 1].messageType === 'text'"
-            ></div>
-            <div class='image' v-if="chat.messages[chat.messages.length - 1].messageType === 'image'">[图片]</div>
+      <div v-else class="room-card" :class="{ active: activeRoom && !activeRoom.groupId && activeRoom.userId === chat.userId }" @click="changeActiveRoom(chat)">
+        <a-badge class="room-card-badge" :count="unReadGather[chat.userId]" />
+        <img class="room-card-type" :src="friendGather[chat.userId].avatar" :class="{ offLine: !activeUserGather.hasOwnProperty(chat.userId) }" alt="" />
+        <div class="room-card-message">
+          <div class="room-card-name">{{ chat.username }}</div>
+          <div class="room-card-new" v-if="chat.messages">
+            <div class="text" v-text="_parseText(chat.messages[chat.messages.length - 1].content)" v-if="chat.messages[chat.messages.length - 1].messageType === 'text'"></div>
+            <div class="image" v-if="chat.messages[chat.messages.length - 1].messageType === 'image'">[图片]</div>
           </div>
         </div>
       </div>
@@ -46,7 +27,7 @@
   </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { namespace } from 'vuex-class'
 
@@ -111,7 +92,7 @@ export default class GeneralRoom extends Vue {
   }
 }
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 @mixin button($bcolor, $url, $x1, $y1, $bor, $col) {
   background: $bcolor;
   -webkit-mask: url($url);
