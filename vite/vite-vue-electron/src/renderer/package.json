@@ -1,0 +1,23 @@
+{
+  "name": "vite-vue-electron",
+  "version": "0.0.0",
+  "main": "./dist/main/main.cjs.js",
+  "author": "xcr",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "src/*"
+    ]
+  },
+  "scripts": {
+    "dev": "node ./scripts/dev-runner",
+    "build": "node ./scripts/build"
+  },
+  "devDependencies": {
+    "chalk": "^4.1.2",
+    "electron": "^16.0.5",
+    "electron-builder": "^22.14.5",
+    "listr": "^0.14.3",
+    "vite": "^2.7.2"
+  }
+}
