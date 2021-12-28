@@ -42,16 +42,8 @@
   pnpm add --save-dev --save-exact prettier
   ```
   
-  ```
-  echo {}> .prettierrc.json
-  ```
-  
-  ```
+  ```shell
   pnpm install --save-dev eslint eslint-plugin-vue
-  ```
-  
-  ```
-  echo ''> .eslintrc.js
   ```
   
   ```js
@@ -132,7 +124,7 @@
 
 - 创建 electron-builder.json
 
-  ```
+  ```json
   {
     "appId": "it_xcr@163.com",
     "asar": true,
