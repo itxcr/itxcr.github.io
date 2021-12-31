@@ -1,5 +1,5 @@
 {
-  "name": "vite-electron-builder1",
+  "name": "vite-electron-builder",
   "private": true,
   "engines": {
     "node": ">=v16.13",

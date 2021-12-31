@@ -1,0 +1,50 @@
+{
+  "root": true,
+  "env": {
+    "es2021": true,
+    "node": false,
+    "browser": true
+  },
+  "extends": [
+    "eslint:recommended",
+    /** https://github.com/typescript-eslint/typescript-eslint/tree/main/packages/eslint-plugin#recommended-configs */
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "ignorePatterns": [
+    "packages/preload/exposedInMainWorld.d.ts",
+    "node_modules/**",
+    "**/dist/**"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/consistent-type-imports": "error",
+    /**
+     * 分号有助于优化器正确解释您的代码
+     * 这避免了优化代码中的罕见错误
+     * @see https://twitter.com/alex_kozack/status/1364210394328408066
+    */
+    "semi": [
+      "error",
+      "always"
+    ],
+    /** 这将使命中更改的历史记录更清晰 */
+    "comma-dangle": [
+      "warn",
+      "always-multiline"
+    ],
+    /** 只为美丽 */
+    "quotes": [
+      "warn",
+      "single"
+    ]
+  }
+}

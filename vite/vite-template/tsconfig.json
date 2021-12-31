@@ -1,15 +1,30 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "useDefineForClassFields": true,
+    /* 指定生成哪个模块系统代码 */
     "module": "esnext",
-    "moduleResolution": "node",
-    "strict": true,
-    "jsx": "preserve",
+    /* 编译后的代码版本 */
+    "target": "esnext",
+    /* 是否生成map文件 */
     "sourceMap": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "lib": ["esnext", "dom"]
-  },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+    /* 选择模块解析策略： 'node' (Node.js) or 'classic' (TypeScript pre-1.6)。默认是classic */
+    "moduleResolution": "node",
+    /* 	忽略所有的声明文件（ *.d.ts）的类型检查 */
+    "skipLibCheck": true,
+    /* 启用所有严格类型检查选项 */
+    "strict": true,
+    /* 将每个文件做为单独的模块 （与 'ts.transpileModule' 类似） */
+    "isolatedModules": true,
+    /* 需要包含的类型声明文件名列表 */
+    "types": [
+      "node"
+    ],
+    /* 包含类型声明的文件列表 */
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    /* 指定要包含在编译中的库文件 */
+    "lib": [
+      "esnext"
+    ]
+  }
 }
