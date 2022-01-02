@@ -24,9 +24,11 @@
 
 - [nano-staged](https://github.com/usmanyunusov/nano-staged#readme)
 
-  相交 `lint-staged`提高性能
+  相较 `lint-staged`提高性能
 
 - eslint
+
+  检测JS代码质量
 
 - eslint-plugin-vue
 
@@ -34,9 +36,11 @@
 
 - @typescript-eslint/eslint-plugin
 
-  代码格式化规则遵循最新的 TypeScript 建议和最佳实践
+  代码格式化规则遵循最新的 TypeScript 建议和最佳实践，提供相应的 rule，让 ESLint 能够识别。同时为了避免冲突，在手动开启该 plugin 的某些规则时，需要将 ESLint 当中的一些规则关闭
 
 - @typescript-eslint/parser
+
+  ESLint 会对我们的代码进行校验，而 parser 的作用是将我们写的代码转换为 [ESTree](https://link.zhihu.com/?target=https%3A//github.com/estree/estree)，ESLint 会对 ESTree 进行校验。
 
 - @types/electron-devtools-installer
 
