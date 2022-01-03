@@ -5,7 +5,8 @@
   "main": "packages/main/dist/index.cjs",
   "scripts": {
     "dev": "node scripts/watch.ts",
-    "build": "node scripts/build.ts && electron-builder build --config .electron-builder.config.js --dir --config.asar=false"
+    "build": "node scripts/build.ts && electron-builder",
+    "compile": "electron-builder"
   },
   "dependencies": {
     "electron-updater": "^4.6.1",
