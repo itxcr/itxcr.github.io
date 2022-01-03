@@ -26,6 +26,8 @@
 
   相较 `lint-staged`提高性能
 
+  细致的配置还是要使用 `lint-staged` 
+
 - eslint
 
   检测JS代码质量

@@ -1,12 +1,12 @@
 interface Window {
   /**
-   * Expose Environment versions.
+   * 暴露环境版本
    * @example
    * console.log( window.versions )
    */
   readonly versions: NodeJS.ProcessVersions;
   /**
-   * Safe expose node.js API
+   * 安全公开 node.js API
    * @example
    * window.nodeCrypto('data')
    */

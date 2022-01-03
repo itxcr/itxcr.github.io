@@ -1,7 +1,7 @@
 import {join} from 'path';
-import vue from '@vitejs/plugin-vue';
-import {builtinModules} from 'module';
 import {loadEnv} from 'vite';
+import {builtinModules} from 'module';
+
 const PACKAGE_ROOT = __dirname;
 const VITE_CONFIG = loadEnv(process.env.MODE, process.cwd());
 
@@ -12,32 +12,35 @@ const VITE_CONFIG = loadEnv(process.env.MODE, process.cwd());
 const config = {
   mode: process.env.MODE,
   root: PACKAGE_ROOT,
+  envDir: process.cwd(),
   resolve: {
     alias: {
       '/@/': join(PACKAGE_ROOT, 'src') + '/',
     },
   },
-  plugins: [vue()],
-  base: '',
-  server: {
-    fs: {
-      strict: true,
-    },
-  },
   build: {
-    sourcemap: true,
+    sourcemap: 'inline',
     target: `chrome${VITE_CONFIG.VITE_CHROME_VERSION}`,
     outDir: 'dist',
     assetsDir: '.',
+    minify: process.env.MODE !== 'development',
+    lib: {
+      entry: 'src/index.ts',
+      formats: ['cjs'],
+    },
     rollupOptions: {
       external: [
+        'electron',
         ...builtinModules,
       ],
+      output: {
+        entryFileNames: '[name].cjs',
+      },
     },
     emptyOutDir: true,
     brotliSize: false,
   },
-};
 
+};
 
 export default config;

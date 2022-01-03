@@ -2,8 +2,8 @@
   "root": true,
   "env": {
     "es2021": true,
-    "node": false,
-    "browser": true
+    "node": true,
+    "browser": false
   },
   "extends": [
     "eslint:recommended",
@@ -27,24 +27,25 @@
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/indent": ["error", 2],
     /**
      * 分号有助于优化器正确解释您的代码
-     * 这避免了优化代码中的罕见错误
+     * 避免了优化代码中的罕见错误
      * @see https://twitter.com/alex_kozack/status/1364210394328408066
     */
     "semi": [
       "error",
       "always"
     ],
-    /** 这将使命中更改的历史记录更清晰 */
+    /** 使命中更改的历史记录更清晰 */
     "comma-dangle": [
       "warn",
       "always-multiline"
     ],
-    /** 只为美丽 */
     "quotes": [
       "warn",
       "single"
-    ]
+    ],
+    "indent": "off"
   }
 }

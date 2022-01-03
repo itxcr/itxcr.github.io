@@ -1,10 +1,11 @@
 {
   "name": "vite-template",
   "version": "0.0.0",
+  "private": true,
+  "main": "packages/main/dist/index.cjs",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "dev": "node scripts/watch.ts",
+    "build": "node scripts/build.ts && electron-builder build --config .electron-builder.config.js --dir --config.asar=false"
   },
   "dependencies": {
     "electron-updater": "^4.6.1",

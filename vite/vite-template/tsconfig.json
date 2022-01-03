@@ -25,6 +25,10 @@
     /* 指定要包含在编译中的库文件 */
     "lib": [
       "esnext"
-    ]
+    ],
+    /* 在表达式和声明上有隐含的 any类型时报错 */
+    "noImplicitAny": false,
+    /* 启用严格的 null 检查 */
+    "strictNullChecks": false
   }
 }
