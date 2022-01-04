@@ -16,7 +16,8 @@
     "isolatedModules": true,
     /* 需要包含的类型声明文件名列表 */
     "types": [
-      "node"
+      "node",
+      "vite/client"
     ],
     /* 包含类型声明的文件列表 */
     "typeRoots": [

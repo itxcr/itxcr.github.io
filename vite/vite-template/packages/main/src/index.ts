@@ -1,4 +1,4 @@
-import { BrowserWindow} from 'electron';
+import {BrowserWindow} from 'electron';
 import {app} from 'electron';
 import {join} from 'path';
 import {URL} from 'url';
