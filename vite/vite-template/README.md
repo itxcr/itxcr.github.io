@@ -44,8 +44,22 @@
 
   ESLint 会对我们的代码进行校验，而 parser 的作用是将我们写的代码转换为 [ESTree](https://link.zhihu.com/?target=https%3A//github.com/estree/estree)，ESLint 会对 ESTree 进行校验。
 
-- @types/electron-devtools-installer
-
 - dts-for-context-bridge
 
   自动为所有传递给 的 API 创建接口声明`electron.contextBridge.exposeInMainWorld`
+
+### 配置
+
+- .eslintrc.json
+
+  ```json
+  {
+    "env": {
+      "vue/setup-compiler-macros": true
+    }
+  }
+  ```
+
+  配置这个来解决 `elsint` 检测 `defineProps` 报错
+
+- 

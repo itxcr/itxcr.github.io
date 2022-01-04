@@ -1,12 +1,8 @@
 #!/usr/bin/env node
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const {build} = require('vite');
 const {dirname} = require('path');
 
 /** @type 'production' | 'development' */
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const mode = process.env.MODE = process.env.MODE || 'production';
 const packagesConfigs = [
   'packages/main/vite.config.js',

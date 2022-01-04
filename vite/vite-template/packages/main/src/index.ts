@@ -96,9 +96,9 @@ if (import.meta.env.DEV) {
 /**
  * 仅在生产模式下检查新的应用程序版本
  */
-if (import.meta.env.PROD) {
-  app.whenReady()
-    .then(() => import('electron-updater'))
-    .then(({autoUpdater}) => autoUpdater.checkForUpdatesAndNotify())
-    .catch((e) => console.error('更新检测失败', e));
-}
+// if (import.meta.env.PROD) {
+//   app.whenReady()
+//     .then(() => import('electron-updater'))
+//     .then(({autoUpdater}) => autoUpdater.checkForUpdatesAndNotify())
+//     .catch((e) => console.error('更新检测失败', e));
+// }

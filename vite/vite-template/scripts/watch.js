@@ -6,6 +6,7 @@ const {spawn} = require('child_process');
 
 /** @type 'production' | 'development'' */
 const mode = process.env.MODE = process.env.MODE || 'development';
+
 /** @type {import('vite').LogLevel} */
 const LOG_LEVEL = 'info';
 
