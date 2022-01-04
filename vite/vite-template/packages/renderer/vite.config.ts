@@ -3,8 +3,8 @@ import vue from '@vitejs/plugin-vue';
 import {builtinModules} from 'module';
 import {loadEnv} from 'vite';
 const PACKAGE_ROOT = __dirname;
-const VITE_CONFIG = loadEnv(process.env.MODE, process.cwd());
 
+process.env = { ...process.env, ...loadEnv(process.env.MODE, process.cwd()) };
 /**
  * @type {import('vite').UserConfig}
  * @see https://vitejs.dev/config/
@@ -26,7 +26,7 @@ const config = {
   },
   build: {
     sourcemap: true,
-    target: `chrome${VITE_CONFIG.VITE_CHROME_VERSION}`,
+    target: `chrome${process.env.VITE_CHROME_VERSION}`,
     outDir: 'dist',
     assetsDir: '.',
     rollupOptions: {
@@ -38,6 +38,5 @@ const config = {
     brotliSize: false,
   },
 };
-
 
 export default config;

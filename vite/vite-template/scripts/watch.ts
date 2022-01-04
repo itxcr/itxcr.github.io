@@ -23,6 +23,8 @@ const sharedConfig = {
 /** stderr 上与任何包含的模式匹配的消息将从输出中删除 */
 const stderrFilterPatterns = [
   // 关于 devtools 扩展的警告
+  // https://github.com/cawa-93/vite-electron-builder/issues/492
+  // https://github.com/MarshallOfSound/electron-devtools-installer/issues/143
   /ExtensionLoadWarning/,
 ];
 
@@ -52,6 +54,7 @@ const setupMainPackageWatcher = (viteDevServer) => {
   const port = viteDevServer.config.server.port;
   const path = '/';
   process.env.VITE_DEV_SERVER_URL = `${protocol}//${host}:${port}${path}`;
+
   const logger = createLogger(LOG_LEVEL, {
     prefix: '[main]',
   });
@@ -65,7 +68,7 @@ const setupMainPackageWatcher = (viteDevServer) => {
     writeBundle() {
       if (spawnProcess !== null) {
         spawnProcess.kill('SIGINT');
-        spawnProcess = null; 
+        spawnProcess = null;
       }
       spawnProcess = spawn(String(electronPath), ['.']);
       spawnProcess.stdout.on('data', d => d.toString().trim() && logger.warn(d.toString(), {timestamp: true}));

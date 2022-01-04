@@ -1,10 +1,9 @@
-import {BrowserWindow} from 'electron';
-import {app} from 'electron';
+import {app, BrowserWindow} from 'electron';
 import {join} from 'path';
 import {URL} from 'url';
 import './security-restrictions';
-let mainWindow: BrowserWindow | null = null;
 
+let mainWindow: BrowserWindow | null = null;
 async function createOrRestoreWindow() {
   // 如果窗口已经存在就显示它
   if (mainWindow && !mainWindow.isDestroyed()) {
@@ -30,7 +29,6 @@ async function createOrRestoreWindow() {
    * 使用 `show: false` 和侦听器事件 `ready-to-show` 来解决这些问题。
    * @see https://github.com/electron/electron/issues/25012
    */
-
   mainWindow.on('ready-to-show', () => {
     mainWindow?.show();
     if (import.meta.env.DEV) {
@@ -87,13 +85,11 @@ app.whenReady()
 if (import.meta.env.DEV) {
   app.whenReady()
     .then(() => import('electron-devtools-installer'))
-    .then(({default: installExtension, VUEJS3_DEVTOOLS}) => {
-      installExtension(VUEJS3_DEVTOOLS, {
-        loadExtensionOptions: {
-          allowFileAccess: true,
-        },
-      });
-    })
+    .then(({default: installExtension, VUEJS3_DEVTOOLS}) => installExtension(VUEJS3_DEVTOOLS, {
+      loadExtensionOptions: {
+        allowFileAccess: true,
+      },
+    }))
     .catch(e => console.error('安装扩展失败', e));
 }
 

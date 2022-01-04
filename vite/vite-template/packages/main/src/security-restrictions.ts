@@ -12,7 +12,6 @@ const ALLOWED_ORIGINS_AND_PERMISSIONS = new Map<string, Set<'clipboard-read' | '
     : [],
 );
 
-
 /**
  * 允许在浏览器中打开的来源列表。
  * 只有在新窗口中打开链接时才能导航到下面的起源
@@ -57,7 +56,7 @@ app.on('web-contents-created', (_, contents) => {
    * @see https://www.electronjs.org/docs/latest/tutorial/security#5-handle-session-permission-requests-from-remote-content
    */
   contents.session.setPermissionRequestHandler((webContents, permission, callback) => {
-    const {origin } = new URL(webContents.getURL());
+    const {origin} = new URL(webContents.getURL());
     const permissionGranted = !!ALLOWED_ORIGINS_AND_PERMISSIONS.get(origin)?.has(permission);
     callback(permissionGranted);
     if (!permissionGranted && import.meta.env.DEV) {
@@ -77,7 +76,6 @@ app.on('web-contents-created', (_, contents) => {
    */
   contents.setWindowOpenHandler(({url}) => {
     const {origin} = new URL(url);
-
     // @ts-expect-error Type checking is performed in runtime
     if (ALLOWED_EXTERNAL_ORIGINS.has(origin)) {
       // 打开默认浏览器
@@ -90,9 +88,7 @@ app.on('web-contents-created', (_, contents) => {
 
   /**
    * 在创建之前验证 webview 选项
-   *
    * 去除预加载脚本，禁用 Node.js 集成，并确保来源在许可名单中。
-   *
    * @see https://www.electronjs.org/docs/latest/tutorial/security#12-verify-webview-options-before-creation
    */
   contents.on('will-attach-webview', (event, webPreferences, params) => {
