@@ -4,28 +4,27 @@
   "private": true,
   "main": "packages/main/dist/index.cjs",
   "scripts": {
-    "dev": "node scripts/watch.ts",
-    "build": "node scripts/build.ts && electron-builder",
+    "dev": "node scripts/watch.js",
+    "build": "node scripts/build.js && electron-builder",
     "compile": "electron-builder"
   },
   "dependencies": {
-    "electron-updater": "^4.6.1",
-    "vue": "^3.2.25"
+    "electron-updater": "^4.6.5",
+    "vue": "^3.2.26"
   },
   "devDependencies": {
-    "@types/electron-devtools-installer": "^2.2.1",
     "@typescript-eslint/eslint-plugin": "^5.8.1",
-    "@typescript-eslint/parser": "^5.8.1",
-    "@vitejs/plugin-vue": "^2.0.0",
+    "@typescript-eslint/parser": "^5.9.0",
+    "@vitejs/plugin-vue": "^2.0.1",
     "cross-env": "^7.0.3",
     "dts-for-context-bridge": "^0.7.1",
     "electron": "^16.0.5",
     "electron-builder": "^22.14.5",
     "electron-devtools-installer": "^3.2.0",
-    "eslint": "^8.5.0",
+    "eslint": "^8.6.0",
     "eslint-plugin-vue": "^8.2.0",
-    "typescript": "^4.4.4",
-    "vite": "^2.7.2",
-    "vue-tsc": "^0.29.8"
+    "typescript": "^4.5.4",
+    "vite": "^2.7.10",
+    "vue-tsc": "^0.30.1"
   }
 }

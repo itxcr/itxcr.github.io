@@ -9,7 +9,7 @@
 
 interface ImportMetaEnv {
   /**
-   * 该变量的值在 scripts/watch.ts 中设置并依赖于packages/main/vite.config.js
+   * 该变量的值在 scripts/watch.js 中设置并依赖于packages/main/vite.config.js
    */
-  VITE_DEV_SERVER_URL: undefined | string
+  VITE_DEV_SERVER_URL: undefined | string;
 }
