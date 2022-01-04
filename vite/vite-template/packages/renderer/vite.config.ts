@@ -1,5 +1,3 @@
-/* eslint-env node */
-
 import {join} from 'path';
 import vue from '@vitejs/plugin-vue';
 import {builtinModules} from 'module';

@@ -4,8 +4,8 @@
   "private": true,
   "main": "packages/main/dist/index.cjs",
   "scripts": {
-    "dev": "node scripts/watch.js",
-    "build": "node scripts/build.js && electron-builder",
+    "dev": "node scripts/watch.ts",
+    "build": "node scripts/build.ts",
     "compile": "electron-builder"
   },
   "dependencies": {
