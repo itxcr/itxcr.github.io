@@ -61,5 +61,3 @@
   ```
 
   配置这个来解决 `elsint` 检测 `defineProps` 报错
-
-- 
