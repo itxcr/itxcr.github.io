@@ -1,18 +1,32 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" :user-info="{ id: 1, name: 'xcr', age: 12 }" />
-  </div>
+  {{ datamsg }}
+  {{ setupmsg }}
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
-import HelloWorld from "@/components/HelloWorld.vue" // @ is an alias to /src
+import { defineComponent, reactive, toRefs } from "vue"
 
 export default defineComponent({
   name: "Home",
-  components: {
-    HelloWorld,
+  components: {},
+  data() {
+    return {
+      datamsg: this.setupmsg + "2",
+    }
+  },
+  setup() {
+    const user = reactive({
+      name: "小浪",
+      age: 21,
+    })
+
+    let userObj = toRefs(user)
+    console.log(userObj, user)
+
+    return {
+      setupmsg: "这是setup的数据1",
+      ...userObj,
+    }
   },
 })
 </script>
