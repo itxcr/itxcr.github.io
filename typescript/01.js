@@ -76,8 +76,6 @@ var Geometry;
         };
         Vector2d.prototype.normalize = function () {
             var len = 1 / this.length();
-            console.log(this.length());
-            console.log(len);
             this._x *= len;
             this._y *= len;
             return { a: this._x, b: this._y };
@@ -86,8 +84,10 @@ var Geometry;
     }());
     Geometry.Vector2d = Vector2d;
 })(Geometry || (Geometry = {}));
+console.log(1);
 var vector = new Geometry.Vector2d(2, 3);
 vector.normalize();
 vector.toArray(function (vectorAsArray) {
     console.log(vectorAsArray);
 });
+console.log(1);
