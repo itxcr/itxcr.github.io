@@ -117,14 +117,25 @@
 //     return `Hi! ${name}`
 //   }
 // }
-function add(foo, bar, foobar) {
-    if (foobar === void 0) { foobar = 0; }
-    return foo + bar + foobar;
-}
+// function add(foo: number, bar: number, foobar: number = 0): number {
+//   return foo + bar + foobar
+// }
 // function add(foo, bar, foobar) {
 //   if (foobar === void 0) {
 //     foobar = 0
 //   }
 //   return foo + bar + foobar
 // }
+function add() {
+    var foo = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        foo[_i] = arguments[_i];
+    }
+    var result = 0;
+    for (var i = 0, j = foo.length; i < j; i++) {
+        result += foo[i];
+    }
+    return result;
+}
+console.log(add(1, 2, 3, 4, 5, 6, 7, 8, 100));
 // add(2, 3)
