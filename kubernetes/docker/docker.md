@@ -34,7 +34,7 @@ mkdir -p /etc/systemd/system/docker.service.d
 systemctl daemon-reload && systemctl restart docker && systemctl enable docker
 ```
 
-![image-20220310203335833](https://cdn.jsdelivr.net/gh/itxcr/oss/images/202203102033907.png)
+
 
 ### 安装依赖包
 
@@ -140,4 +140,26 @@ EOF
 
 chmod 755 /etc/sysconfig/modules/ipvs.modules && bash /etc/sysconfig/modules/ipvs.modules && lsmod | grep -e ip_vs -e nf_conntrack
 ```
+
+### 安装 Kubeadm （主从配置）
+
+创建文件 `kubernetes.repo` 
+
+```bash
+vim /etc/yum.repos.d/kubernetes.repo
+
+# 添加如下
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+# 安装
+yum install -y kubelet kubeadm kubectl --disableexcludes=Kubernetes
+```
+
+4:52
 
