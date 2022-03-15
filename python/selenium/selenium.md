@@ -23,5 +23,73 @@ Selenium 提供 8 种 `find_element_by` 方法用于定位元素。
 
 find_element_by_id() 返回与 ID 属性匹配的第一个元素，如果没有元素与之匹配，则抛出 NoSuchElementException 异常。find_elements_by_id() 返回匹配 ID 值的所有元素。
 
-#### name 定位
+#### ...
+
+### Webdriver 功能
+
+| 功能/属性             | 描述                            | 实例                         |
+| --------------------- | ------------------------------- | ---------------------------- |
+| current_url           | 获取当前页面地址                | driver.current_url           |
+| current_window_handle | 获取当前窗口的句柄              | driver.current_window_handle |
+| name                  | 获取该实例底层的浏览器名称      | driver.name                  |
+| orientation           | 获取当前设备的方位              | driver.orientation           |
+| page_source           | 获取当前页面的源码              | driver.page_source           |
+| title                 | 获取当前页面的标题              | driver.title                 |
+| window_handles        | 获取当前session里所有窗口的句柄 | driver.window_handles        |
+
+### Webdriver 方法
+
+| 方法                                | 描述                                                         | 参数                                                         | 实例                                 |
+| ----------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------ |
+| back()                              | 后退一步到当前会话 的浏览器历史记录中最后一步操作前的页面    |                                                              | driver.back()                        |
+| close()                             | 关闭当前浏览器窗口                                           |                                                              | driver.close()                       |
+| forward()                           | 前进一步到当前会话的浏览器历史记录中前一步操作后的页面       |                                                              | driver.get(url)                      |
+| get(url)                            | 访问目标URL并加载网页到当前的浏览器会话                      | URL为目标网址                                                | driver.get('https://www.google.com') |
+| maximize_window()                   | 最大化当前浏览器窗口                                         |                                                              | driver.maximize_window()             |
+| quit()                              | 退出当前driver并关闭所有的相关窗口                           |                                                              | driver.quit()                        |
+| refresh()                           | 刷新当前页面                                                 |                                                              | driver.refresh()                     |
+| switch_to_active_element()          | 返回当前页面唯一焦点所在的元素或者元素体                     |                                                              | driver.switch_to_active_element()    |
+| switch_to_alert()                   | 把焦点切换至当前页面弹出的警告                               |                                                              | driver.switch_to_alert()             |
+| switch_to_default_content()         | 切换焦点至默认框架内                                         |                                                              | driver.switch_to_default_content()   |
+| switch_to_frame(frame_reference)    | 通过索引，名称和网页元素将焦点切换到指定的框架，这种方法也适用于IFRAMES | frame_reference：要切换的目标窗口的名称，整数类型的索引或者要切换的目标框架的网页元素 | driver.switch_to_frame('frame_name') |
+| switch_to_window(window_name)       | 切换焦点到指定的窗口                                         | window_name：要切换的目标窗口的名称或者句柄                  | driver.switch_to_window('main')      |
+| implicitly_wait(time_to_wait)       | 超时设置等待目标元素被找到，或者目标指令执行完成。该方法在每个 session 只需要调用一次 | time_to_wait：等待时间（单位为秒）                           |                                      |
+| set_page_load_timeout(time_to_wait) | 设置一个页面完全加载完成的超时等待时间                       | time_to_wait：等待时间（单位为秒）                           | driver.set_page_load_timeout(30)     |
+| set_script_timeout(time_to_wait)    | 设置脚本执行的超时时间，应在 execute_async_script 抛出错误之前 | time_to_wait：等待时间（单位为秒）                           | driver.set_script_timeout(30)        |
+
+### WebElement 功能
+
+| 功能/属性 | 描述                   | 实例             |
+| --------- | ---------------------- | ---------------- |
+| size      | 获取元素的大小         | element.size     |
+| tag_name  | 获取元素的HTML标签名称 | element.tag_name |
+| text      | 获取元素的文本值       | element.text     |
+
+### WebElement 方法
+
+| 方法                                 | 描述                                                         | 参数                         | 实例                                             |
+| ------------------------------------ | ------------------------------------------------------------ | ---------------------------- | ------------------------------------------------ |
+| clear()                              | 清除文本框或者文本域中的内容                                 |                              | element.clear()                                  |
+| click()                              | 单击元素                                                     |                              | element.click()                                  |
+| get_attribute(name)                  | 获取元素的属性值                                             | name：元素的名称             | element.get_attribute('value')                   |
+| is_displayed()                       | 检查元素对于用户是否可见                                     |                              | element.is_displayed()                           |
+| is_enabled()                         | 检查元素是否可用                                             |                              | element.is_enabled()                             |
+| is_selected()                        | 检查元素是否被选中。该方法应用于复选框和单选按钮             |                              | element.is_selected()                            |
+| send_keys(value)                     | 模拟输入文本                                                 | value:输入的字符串           | element.send_keys('xcr')                         |
+| submit()                             | 用于提交表单。如果对一个元素应用此方法，将会提交该元素所属的表单 |                              | element.submit()                                 |
+| value_of_css_property(property_name) | 获取css属性的值                                              | property_name：css属性的名称 | element.value_of_css_property('backgroundcolor') |
+
+### 隐式等待
+
+### 显式等待
+
+### 操作 cookies
+
+| 方法                    | 描述                                     | 参数 | 实例 |
+| ----------------------- | ---------------------------------------- | ---- | ---- |
+| add_cookie(cookie_dict) | 在当前会话中添加 cookie 信息             |      |      |
+| delete_all_cookies()    | 清除所有cookie信息                       |      |      |
+| delete_cookie(name)     | 删除单个名为name 的cookie                |      |      |
+| get_cookie(name)        | 返回名为name的cookie信息，没有则返回none |      |      |
+| get_cookies()           | 返回当前会话的所有cookie信息             |      |      |
 
