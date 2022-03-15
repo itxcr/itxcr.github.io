@@ -1,13 +1,8 @@
 # https://www.youtube.com/watch?v=ximjGyZ93YQ
 # 导入 selenium
 from selenium import webdriver
-import time
+
 # 按键库
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-import os
 # chromedriver 驱动程序存放路径
 PATH = 'D:\softwares\chromedriver.exe'
 # 创建一个 Chrome 浏览器驱动实例
@@ -38,3 +33,6 @@ for product in products:
 # time.sleep(5)
 # print(driver.title)
 driver.quit()
+#
+# def getPageInfo(url):
+#     products =
