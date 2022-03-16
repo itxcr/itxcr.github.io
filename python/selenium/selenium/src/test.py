@@ -1,5 +1,6 @@
 # https://www.youtube.com/watch?v=ximjGyZ93YQ
 import csv
+import os
 # 导入 selenium
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -18,9 +19,15 @@ def getProducts():
     #     if len(currentPageProductsTitle) < int(total.text):
     #         print(currentPageProductsTitle.text + currentPageProductsPrice)
     WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, '/html/body/div[4]/div[1]/div[7]/div[2]/div/a[5]'))
+        EC.presence_of_element_located((By.LINK_TEXT, '下一页'))
     )
-    nextClick = driver.find_element_by_xpath('/html/body/div[4]/div[1]/div[7]/div[2]/div/a[5]')
+    nextClick = driver.find_element_by_link_text('下一页')
+    driver.execute_script('arguments[0].scrollIntoView(true)', driver.find_element_by_link_text('下一页'))
+    print(nextClick.get_attribute('data-page'))
+    print(nextClick.tag_name)
+    print(nextClick.size)
+    print(nextClick.is_enabled())
+    print(nextClick.is_selected())
     nextClick.click()
 
 # 按键库
@@ -35,6 +42,10 @@ driver = webdriver.Chrome(PATH)
 # 调用 driver.get() 传入要访问页面 URL，在方法被调用后，webdriver 会等待，一直到页面加载完成后才继续控制脚本
 # driver.get('https://gz.kfang.com/xiaoqu')
 driver.get('https://tj.lianjia.com/ershoufang/jinnan/')
+
+WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.ID, 'searchInput'))
+)
 search_field = driver.find_element_by_id('searchInput')
 search_field.clear()
 search_field.send_keys("咸水沽")
@@ -47,8 +58,7 @@ getProducts()
 #     EC.presence_of_element_located((By.CLASS_NAME, 'myD'))
 # )
 
-# print(driver.title)
-# driver.quit()
+driver.quit()
 #
 # def getPageInfo(url):
 #     products =
