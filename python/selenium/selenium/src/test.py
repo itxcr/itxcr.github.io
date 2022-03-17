@@ -58,7 +58,7 @@ getProducts()
 #     EC.presence_of_element_located((By.CLASS_NAME, 'myD'))
 # )
 
-driver.quit()
+# driver.quit()
 #
 # def getPageInfo(url):
 #     products =

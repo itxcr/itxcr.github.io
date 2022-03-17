@@ -77,14 +77,14 @@ def get_range_price_page_url():
             except Exception:
                 driver.get(part_range_price_url)
             # 等待2秒，以便浏览器加载所有资源，受网速影响如果网站需要加载资源较多可能加载不完全
-            time.sleep(2)
+            # time.sleep(2)
             html = driver.page_source
             selector = etree.HTML(html)
             # 根据不同区不同售价url页面中的总房源数（每页30天，最后一页不足30条）计算有多少页
             house_count = selector.xpath('//*[@class="resultDes clear"]/h2/span/text()')
             yushu = int(house_count[0]) % 30
             # page_count = 0
-            if (yushu is 0):
+            if yushu is 0:
                 page_count = int(int(house_count[0]) / 30)
             else:
                 page_count = int(int(house_count[0]) / 30) + 1
@@ -92,7 +92,7 @@ def get_range_price_page_url():
             # 构造不同区不同售价不同页码的URL
             for i in range(0, page_count):
                 # range_price_page_url=''
-                if (i is 0):
+                if i is 0:
                     range_price_page_url = part_range_price_url
                 else:
                     list_ss = part_range_price_url.split('/')
