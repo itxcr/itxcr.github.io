@@ -121,4 +121,22 @@ def get_range_price_page_url():
     print('房产总数' + str(sum_nums))
 
 
+# 获取每一个房源详情页的url
+def get_final_urls():
+    # 读取 excel 表格
+    data = xlrd.open_workbook('天津市房产信息.xls')
+    # 通过索引顺序获取表
+    table = data.sheets()[0]
+    # 获取行数
+    row_count = table.nrows
+    driver = get_chromedriver()
+    # 创建 workbook
+    workbook = xlwt.Workbook(encoding='utf-8')
+    # 创建工作表
+    worksheet = workbook.add_sheet('Sheet1')
+    count = 0
+    for i in range(0, row_count):
+        print()
+
+
 get_range_price_page_url()
