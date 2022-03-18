@@ -29,6 +29,7 @@ def get_final_urls():
     # 获取行数
     row_count = table.nrows
     driver = get_chromedriver()
+    print('总行数' + str(row_count))
     # 创建workboook
     workbook = xlwt.Workbook(encoding='utf-8')
     # 创建工作表
