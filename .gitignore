@@ -4,3 +4,4 @@ dist
 .idea
 dll
 .env.prod
+__pycache__
