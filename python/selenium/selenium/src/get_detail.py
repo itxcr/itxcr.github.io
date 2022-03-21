@@ -1,9 +1,21 @@
-import xlrd
-import xlwt
 from lxml import etree
-import re
 import time
 from selenium import webdriver
+import pymongo
+
+user_name = 'xcr01'
+user_pwd = 'dagongren'
+host = 'www.atlantide.top'
+port = 60001
+db_name = 'dagongren'
+client = pymongo.MongoClient(
+    "mongodb://{username}:{password}@{host}:{port}/{db_name}".format(username=user_name, password=user_pwd, host=host,
+                                                                     port=port,
+                                                                     db_name=db_name))
+
+mydb = client['dagongren']
+mycol = mydb['tianjin_all_urls']
+my_details = mydb['tianjin_detail_urls']
 
 
 def get_chromedriver():
@@ -21,45 +33,28 @@ def get_chromedriver():
 
 # 获取每一个房源详情页的url
 def get_final_urls():
-    # 读取excel文件
-    data = xlrd.open_workbook('天津市房产信息.xls')
-    # 通过索引顺序获取表
-    table = data.sheet_by_name('Sheet1')
-    # print(table.row_values(0)[1])
-    # 获取行数
-    row_count = table.nrows
+    col_data = list(mycol.find({}, {'url': 1, '_id': 0}))
     driver = get_chromedriver()
-    print('总行数' + str(row_count))
-    # 创建workboook
-    workbook = xlwt.Workbook(encoding='utf-8')
-    # 创建工作表
-    worksheet = workbook.add_sheet('Sheet1')
-    count = 0
-    for i in range(0, row_count):
-        area_name = table.row_values(i)[0]
-        area_url = table.row_values(i)[1]
+    for i in col_data:
+        area_url = i['url']
         try:
             driver.get(area_url)
         except Exception:
             driver.get(area_url)
-        # 获取房源详情页面
         html = driver.page_source
-        # 解析详情页
         selector = etree.HTML(html)
         for j in range(0, 30):
             try:
-                final_url = selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/a/@href')
+                detail_url = selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/div[1]/div[1]/a/@href')[0]
+                detail_title = selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/div[1]/div[1]/a/text()')[0]
             except Exception:
                 break
-            if len(final_url) == 0:
+            try:
+                my_details.insert_one({'title': detail_title, 'url': detail_url})
+            except Exception:
                 continue
-            worksheet.write(count, 0, area_name)
-            worksheet.write(count, 1, final_url[0])
-            count += 1
-            print(area_name, final_url[0], count)
+            print(detail_title + ':' + detail_url)
     driver.quit()
-    workbook.save('小区详情.xls')
-    print('小区总数' + str(count))
-
+    client.close()
 
 get_final_urls()

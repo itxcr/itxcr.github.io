@@ -4,6 +4,20 @@ from lxml import etree
 import re
 import time
 from selenium import webdriver
+import pymongo
+
+user_name = 'xcr01'
+user_pwd = 'dagongren'
+host = 'www.atlantide.top'
+port = 60001
+db_name = 'dagongren'
+client = pymongo.MongoClient(
+    "mongodb://{username}:{password}@{host}:{port}/{db_name}".format(username=user_name, password=user_pwd, host=host,
+                                                                     port=port,
+                                                                     db_name=db_name))
+mydb = client['dagongren']
+mycol = mydb['tianjin_all_urls']
+nocol = mydb['tianjin_all_urls_zero']
 
 city_url = 'https://tj.lianjia.com/ershoufang'
 
@@ -11,7 +25,7 @@ city_url = 'https://tj.lianjia.com/ershoufang'
 # 实例化 chromedriver
 def get_chromedriver():
     chrome_options = webdriver.ChromeOptions()
-    # chrome_options.add_argument('–disable-infobars')
+    chrome_options.add_argument('–disable-infobars')
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
@@ -75,34 +89,50 @@ def get_range_price_page_url():
     # 创建 表
     worksheet = workbook.add_sheet('Sheet1')
     count = 0
-    sum_nums = 0
+    exist_urls = []
+    col_data = list(mycol.find({}, {'url': 1, '_id': 0}))
+    no_col_data = list(nocol.find({}, {'url': 1, '_id': 0}))
+    for i in col_data:
+        exist_urls.append(i['url'])
+    for i in no_col_data:
+        exist_urls.append(i['url'])
     for key in range_price_urls:
         try:
             driver = get_chromedriver()
         except Exception:
             driver = get_chromedriver()
         part_range_price_urls = range_price_urls[key]
+        part_range_price_urls = list(set(part_range_price_urls).difference(set(exist_urls)))
+        print(len(part_range_price_urls))
         for part_range_price_url in part_range_price_urls:
             # 请求URL获取该页面中房源的个数，计算有多少页
             try:
                 driver.get(part_range_price_url)
             except Exception:
                 driver.get(part_range_price_url)
-            # time.sleep(2)
+            time.sleep(1)
             html = driver.page_source
             selector = etree.HTML(html)
             # 根据不同区不同售价url页面中的总房源数（每页30条，最后一页不足30条）计算有多少页
-            house_count = selector.xpath('//*[@id="content"]/div[1]/div[2]/h2/span/text()')
-            if house_count[0] == '0':
-                print('数据为0，中断跳出')
+            try:
+                house_count = selector.xpath('//*[@id="content"]/div[1]/div[2]/h2/span/text()')[0]
+            except Exception:
+                print('house_count没有元素，中断跳出')
+                nocol.insert_one({'area_name': key, 'url': part_range_price_url})
                 continue
-            print('未中断', '数据量:' + str(house_count[0]))
-            sum_nums += int(house_count[0])
-            nums = int(house_count[0]) % 30
+            if int(house_count) == 0:
+                try:
+                    nocol.insert_one({'area_name': key, 'url': part_range_price_url})
+                    print('中断跳出')
+                except Exception:
+                    continue
+                continue
+            print('数据量:' + str(house_count))
+            nums = int(house_count) % 30
             if nums == 0:
-                page_count = int(int(house_count[0]) / 30)
+                page_count = int(int(house_count) / 30)
             else:
-                page_count = int(int(house_count[0]) / 30) + 1
+                page_count = int(int(house_count) / 30) + 1
             # 构造不同页码的URL
             print('页数:' + str(page_count))
             for i in range(0, page_count):
@@ -112,13 +142,17 @@ def get_range_price_page_url():
                     list_url = part_range_price_url.split('/')
                     url_priceId = list_url[5]
                     range_price_page_url = part_range_price_url.replace(url_priceId, 'pg' + str(i + 1) + url_priceId)
-                print(range_price_page_url)
+                try:
+                    mycol.insert_one({'area_name': key, 'url': range_price_page_url})
+                    print(range_price_page_url)
+                except Exception:
+                    continue
                 worksheet.write(count, 0, key)
                 worksheet.write(count, 1, range_price_page_url)
                 count += 1
         driver.quit()
+    client.close()
     workbook.save('天津市所有区不同价格不同房型不同板型Url信息.xls')
-    print('房产总数' + str(sum_nums))
 
 
 # 获取每一个房源详情页的url

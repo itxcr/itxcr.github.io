@@ -137,11 +137,9 @@ def get_final_urls():
         selector = etree.HTML(html)
         for j in range(0, 30):
             try:
-                final_url = selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/a/@href')
+                final_url = selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/div[1]/div[1]/a/@href')[0]
             except Exception:
                 break
-            if len(final_url) == 0:
-                continue
             worksheet.write(count, 0, area_name)
             worksheet.write(count, 1, final_url[0])
             count += 1
