@@ -93,7 +93,7 @@ def get_range_price_page_url():
             selector = etree.HTML(html)
             # 根据不同区不同售价url页面中的总房源数（每页30条，最后一页不足30条）计算有多少页
             house_count = selector.xpath('//*[@id="content"]/div[1]/div[2]/h2/span/text()')
-            if int(house_count[0]) == 0:
+            if house_count[0] == '0':
                 print('数据为0，中断跳出')
                 continue
             print('未中断', '数据量:' + str(house_count[0]))
