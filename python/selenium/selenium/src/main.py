@@ -158,13 +158,12 @@ def get_final_urls():
         selector = etree.HTML(html)
         for j in range(0, 30):
             try:
-                detail_url = \
-                selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/div[1]/div[1]/a/@href')[0]
-                detail_title = \
-                selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/div[1]/div[1]/a/text()')[0]
+                detail_url = selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/div[1]/div[1]/a/@href')[0]
+                detail_title = selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/div[1]/div[1]/a/text()')[0]
                 my_details.insert_one({'title': detail_title, 'url': detail_url})
+                print('成功:', detail_title, detail_url)
             except Exception:
-                print(detail_url + '已存在')
+                print('失败:' + str(j + 1), detail_url)
                 continue
             print(detail_title + ':' + detail_url)
     driver.quit()
