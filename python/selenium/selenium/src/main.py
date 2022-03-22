@@ -1,10 +1,8 @@
-import xlrd
-import xlwt
 from lxml import etree
-import re
 import time
 from selenium import webdriver
 import pymongo
+import re
 
 user_name = 'xcr01'
 user_pwd = 'dagongren'
@@ -18,7 +16,8 @@ client = pymongo.MongoClient(
 mydb = client['dagongren']
 mycol = mydb['tianjin_all_urls']
 nocol = mydb['tianjin_all_urls_zero']
-
+my_details = mydb['tianjin_detail_urls']
+details = mydb['tianjin_details']
 city_url = 'https://tj.lianjia.com/ershoufang'
 
 
@@ -84,11 +83,6 @@ def get_range_price_url():
 # 根据已经获取的不同区不同售价的URL，获取不同区不同售价不同页的URL，将URL写入excel
 def get_range_price_page_url():
     range_price_urls = get_range_price_url()
-    # 创建 workbook
-    workbook = xlwt.Workbook(encoding='utf-8')
-    # 创建 表
-    worksheet = workbook.add_sheet('Sheet1')
-    count = 0
     exist_urls = []
     col_data = list(mycol.find({}, {'url': 1, '_id': 0}))
     no_col_data = list(nocol.find({}, {'url': 1, '_id': 0}))
@@ -96,14 +90,17 @@ def get_range_price_page_url():
         exist_urls.append(i['url'])
     for i in no_col_data:
         exist_urls.append(i['url'])
+    driver = get_chromedriver()
+    count = 0
     for key in range_price_urls:
-        try:
-            driver = get_chromedriver()
-        except Exception:
-            driver = get_chromedriver()
+        count += 1
         part_range_price_urls = range_price_urls[key]
+        print('当前需搜索的个数', len(part_range_price_urls), )
         part_range_price_urls = list(set(part_range_price_urls).difference(set(exist_urls)))
-        print(len(part_range_price_urls))
+        print('排除掉数据库中已存在数据后剩余个数', len(part_range_price_urls))
+        print('已循环', count)
+        if len(part_range_price_urls) == 0:
+            continue
         for part_range_price_url in part_range_price_urls:
             # 请求URL获取该页面中房源的个数，计算有多少页
             try:
@@ -116,16 +113,11 @@ def get_range_price_page_url():
             # 根据不同区不同售价url页面中的总房源数（每页30条，最后一页不足30条）计算有多少页
             try:
                 house_count = selector.xpath('//*[@id="content"]/div[1]/div[2]/h2/span/text()')[0]
-            except Exception:
-                print('house_count没有元素，中断跳出')
-                nocol.insert_one({'area_name': key, 'url': part_range_price_url})
-                continue
-            if int(house_count) == 0:
-                try:
+                if int(house_count) == 0:
                     nocol.insert_one({'area_name': key, 'url': part_range_price_url})
                     print('中断跳出')
-                except Exception:
                     continue
+            except Exception:
                 continue
             print('数据量:' + str(house_count))
             nums = int(house_count) % 30
@@ -147,54 +139,163 @@ def get_range_price_page_url():
                     print(range_price_page_url)
                 except Exception:
                     continue
-                worksheet.write(count, 0, key)
-                worksheet.write(count, 1, range_price_page_url)
-                count += 1
-        driver.quit()
-    client.close()
-    workbook.save('天津市所有区不同价格不同房型不同板型Url信息.xls')
+    driver.quit()
+    print('结束')
+    # client.close()
 
 
-# 获取每一个房源详情页的url
 def get_final_urls():
-    # 读取excel文件
-    data = xlrd.open_workbook('天津市房产信息.xls')
-    # 通过索引顺序获取表
-    table = data.sheet_by_name('Sheet1')
-    # print(table.row_values(0)[1])
-    # 获取行数
-    row_count = table.nrows
+    print('开始获取详细url')
+    col_data = list(mycol.find({}, {'url': 1, '_id': 0}))
     driver = get_chromedriver()
-    # 创建workboook
-    workbook = xlwt.Workbook(encoding='utf-8')
-    # 创建工作表
-    worksheet = workbook.add_sheet('Sheet1')
-    count = 0
-    for i in range(0, row_count):
-        area_name = table.row_values(i)[0]
-        area_url = table.row_values(i)[1]
+    for i in col_data:
+        area_url = i['url']
         try:
             driver.get(area_url)
         except Exception:
             driver.get(area_url)
-        # 获取房源详情页面
         html = driver.page_source
-        # 解析详情页
         selector = etree.HTML(html)
         for j in range(0, 30):
             try:
-                final_url = selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/a/@href')
+                detail_url = \
+                selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/div[1]/div[1]/a/@href')[0]
+                detail_title = \
+                selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/div[1]/div[1]/a/text()')[0]
+                my_details.insert_one({'title': detail_title, 'url': detail_url})
             except Exception:
-                break
-            if len(final_url) == 0:
+                print(detail_url + '已存在')
                 continue
-            worksheet.write(count, 0, area_name)
-            worksheet.write(count, 1, final_url[0])
-            count += 1
-            print(area_name, final_url[0], count)
+            print(detail_title + ':' + detail_url)
     driver.quit()
-    workbook.save('小区详情.xls')
-    print('小区总数' + str(count))
+    # client.close()
 
 
-get_range_price_page_url()
+def get_house_detail():
+    url_datas = list(my_details.find({}, {'url': 1, '_id': 0}))
+    driver = get_chromedriver()
+    for i in url_datas:
+        detail_url = i['url']
+        try:
+            driver.get(detail_url)
+        except Exception:
+            driver.get(detail_url)
+        time.sleep(1)
+        html = driver.page_source
+        selector = etree.HTML(html)
+        url_id = detail_url.split('.')[2].split('/')[2]
+        try:
+            # 获取总价
+            total_price = selector.xpath('//*[@class="total"]/text()')[0]
+            # 获取单价
+            unit_price = selector.xpath('//*[@class="unitPriceValue"]/text()')[0]
+            # 小区名称
+            community_name = selector.xpath('//*[@class="communityName"]/a[1]/text()')[0]
+            # 所在区域
+            locate_area = selector.xpath('//*[@class="info"]/a[2]/text()')[0]
+            # 通过正则表达式匹配获取经纬度信息
+            pattern = re.compile("resblockPosition:'" + '(.*?)' + "',", re.S)
+            pos = pattern.findall(html)[0]
+            lon = pos.split(',')[0]
+            lat = pos.split(',')[1]
+            # 获取基本信息
+            # 1房屋户型
+            house_type = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[1]/text()')[0]).strip()
+            # 2所在楼层
+            house_floor = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[2]/text()')[0]).strip()
+            # 3建筑面积
+            house_construction_area = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[3]/text()')[0]).strip()
+            # 4户型结构
+            house_structure = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[4]/text()')[0]).strip()
+            # 5套内面积
+            house_inside_area = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[5]/text()')[0]).strip()
+            # 6建筑类型
+            house_building_type = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[6]/text()')[0]).strip()
+            # 7房屋朝向
+            house_facing = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[7]/text()')[0]).strip()
+            # 8建筑结构
+            building_structure = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[8]/text()')[0]).strip()
+            # 9装修情况
+            renovation_condition = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[9]/text()')[0]).strip()
+            # 10梯户比例
+            elevator_ratio = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[10]/text()')[0]).strip()
+            # 11供暖方式
+            heating_method = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[11]/text()')[0]).strip()
+            # 12配备电梯
+            equipped_with_elevator = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[12]/text()')[0]).strip()
+            # 获取交易属性
+            # 1挂牌时间
+            listing_time = str(selector.xpath('//*[@class="transaction"]/div[2]/ul/li[1]/span[2]/text()')[0]).strip()
+            # 2交易权属
+            transaction_ownership = str(
+                selector.xpath('//*[@class="transaction"]/div[2]/ul/li[2]/span[2]/text()')[0]).strip()
+            # 3上次交易
+            last_transaction = str(
+                selector.xpath('//*[@class="transaction"]/div[2]/ul/li[3]/span[2]/text()')[0]).strip()
+            # 4房屋用途
+            usage_of_houses = str(selector.xpath('//*[@class="transaction"]/div[2]/ul/li[4]/span[2]/text()')[0]).strip()
+            # 5房屋年限
+            years_of_housing = str(
+                selector.xpath('//*[@class="transaction"]/div[2]/ul/li[5]/span[2]/text()')[0]).strip()
+            # 6产权所属
+            property_rights = str(selector.xpath('//*[@class="transaction"]/div[2]/ul/li[6]/span[2]/text()')[0]).strip()
+            # 7抵押信息
+            mortgage_information = str(
+                selector.xpath('//*[@class="transaction"]/div[2]/ul/li[7]/span[2]/text()')[0]).strip()
+            # 8房本备件
+            room_spare_parts = str(
+                selector.xpath('//*[@class="transaction"]/div[2]/ul/li[8]/span[2]/text()')[0]).strip()
+            details.insert_one({
+                'community_name': community_name,
+                'locate_area': locate_area,
+                'total_price': total_price,
+                'unit_price': unit_price,
+                'house_type': house_type,
+                'house_floor': house_floor,
+                'house_construction_area': house_construction_area,
+                'house_structure': house_structure,
+                'house_inside_area': house_inside_area,
+                'house_building_type': house_building_type,
+                'house_facing': house_facing,
+                'building_structure': building_structure,
+                'renovation_condition': renovation_condition,
+                'elevator_ratio': elevator_ratio,
+                'heating_method': heating_method,
+                'equipped_with_elevator': equipped_with_elevator,
+                'listing_time': listing_time,
+                'transaction_ownership': transaction_ownership,
+                'last_transaction': last_transaction,
+                'usage_of_houses': usage_of_houses,
+                'years_of_housing': years_of_housing,
+                'property_rights': property_rights,
+                'mortgage_information': mortgage_information,
+                'room_spare_parts': room_spare_parts,
+                'lon': lon,
+                'lat': lat,
+                'url_id': url_id
+            })
+            print(community_name, locate_area, total_price, unit_price, house_type,
+                  house_floor, house_construction_area, house_structure, house_inside_area,
+                  house_building_type, house_facing,
+                  building_structure, renovation_condition,
+                  elevator_ratio, heating_method,
+                  equipped_with_elevator, listing_time,
+                  transaction_ownership, last_transaction,
+                  usage_of_houses, years_of_housing,
+                  property_rights, mortgage_information,
+                  room_spare_parts, lon, lat, url_id)
+        except Exception:
+            print(url_id + '已存在')
+            continue
+    driver.quit()
+    client.close()
+
+
+def main():
+    get_range_price_page_url()
+    get_final_urls()
+    get_house_detail()
+
+
+if __name__ == '__main__':
+    main()

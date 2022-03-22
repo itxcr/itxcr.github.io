@@ -9,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-def getProducts():
+def get_products():
     # total = driver.find_element_by_css_selector("h2.total span")
     # products = []
     #
@@ -29,6 +29,7 @@ def getProducts():
     print(nextClick.is_enabled())
     print(nextClick.is_selected())
     nextClick.click()
+
 
 # 按键库
 # chromedriver 驱动程序存放路径
@@ -50,7 +51,7 @@ search_field = driver.find_element_by_id('searchInput')
 search_field.clear()
 search_field.send_keys("咸水沽")
 search_field.send_keys(Keys.RETURN)
-getProducts()
+get_products()
 # result = driver.find_elements_by_class_name('items')
 # for title in result:
 #     print(title.text)
