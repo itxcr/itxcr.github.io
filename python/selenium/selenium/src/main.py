@@ -165,7 +165,6 @@ def get_final_urls():
             except Exception:
                 print('失败:' + str(j + 1), detail_url)
                 continue
-            print(detail_title + ':' + detail_url)
     driver.quit()
     # client.close()
 
