@@ -159,8 +159,10 @@ def get_final_urls():
         selector = etree.HTML(html)
         for j in range(0, 30):
             try:
-                detail_url = selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/div[1]/div[1]/a/@href')[0]
-                detail_title = selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/div[1]/div[1]/a/text()')[0]
+                detail_url = \
+                selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/div[1]/div[1]/a/@href')[0]
+                detail_title = \
+                selector.xpath('//*[@id="content"]/div[1]/ul/li[' + str(j + 1) + ']/div[1]/div[1]/a/text()')[0]
                 my_details.insert_one({'title': detail_title, 'url': detail_url})
                 print('成功:', detail_title, detail_url)
             except Exception:
@@ -172,14 +174,22 @@ def get_final_urls():
 
 def get_house_detail():
     url_datas = list(my_details.find({}, {'url': 1, '_id': 0}))
-    driver = get_chromedriver()
+    exist_details = list(details.find({}, {'url_id': 1, '_id': 0}))
+    all_urls = []
+    exist_urls = []
     for i in url_datas:
-        detail_url = i['url']
+        all_urls.append(i['url'])
+    for i in exist_details:
+        exist_urls.append('https://tj.lianjia.com/ershoufang/' + str(i['url_id']) + '.html')
+    all_urls = list(set(all_urls).difference(set(exist_urls)))
+    driver = get_chromedriver()
+    for i in all_urls:
+        detail_url = i
         try:
             driver.get(detail_url)
         except Exception:
             driver.get(detail_url)
-        # time.sleep(1)
+        time.sleep(1)
         html = driver.page_source
         selector = etree.HTML(html)
         url_id = detail_url.split('.')[2].split('/')[2]
@@ -284,16 +294,18 @@ def get_house_detail():
                   property_rights, mortgage_information,
                   room_spare_parts, lon, lat, url_id)
         except Exception:
-            print('失败:', detail_url)
-            details_err.insert_one({'url': detail_url})
+            try:
+                details_err.insert_one({'url': detail_url})
+            except Exception:
+                print(detail_url, '已存在')
             continue
     driver.quit()
     client.close()
 
 
 def main():
-    get_range_price_page_url()
-    get_final_urls()
+    # get_range_price_page_url()
+    # get_final_urls()
     get_house_detail()
 
 

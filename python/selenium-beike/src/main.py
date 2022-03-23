@@ -168,19 +168,30 @@ def get_final_urls():
 
 def get_house_detail():
     url_datas = list(my_details.find({}, {'url': 1, '_id': 0}))
-    driver = get_chromedriver()
+    exist_details = list(details.find({}, {'url_id': 1, '_id': 0}))
+    all_urls = []
+    exist_urls = []
     for i in url_datas:
-        detail_url = i['url']
+        all_urls.append(i['url'])
+    print(len(all_urls))
+    for i in exist_details:
+        exist_urls.append('https://tj.ke.com/ershoufang/' + str(i['url_id']) + '.html')
+    all_urls = list(set(all_urls).difference(set(exist_urls)))
+    print(len(all_urls))
+    driver = get_chromedriver()
+    for i in all_urls:
+        detail_url = i
         try:
             driver.get(detail_url)
         except Exception:
             driver.get(detail_url)
-        # time.sleep(1)
+        time.sleep(1)
         html = driver.page_source
         selector = etree.HTML(html)
         url_id = detail_url.split('.')[2].split('/')[2]
         house_type = ''
         house_floor = ''
+        rent_area = ''
         house_construction_area = ''
         house_structure = ''
         inside_area = ''
@@ -223,79 +234,82 @@ def get_house_detail():
                 lat = ''
             lists = selector.xpath('//*[@id="introduction"]/div/div/div[1]/div[2]/ul/li/span/text()')
             lists_inner = selector.xpath('//*[@id="introduction"]/div/div/div[1]/div[2]/ul/li/text()')
+            trade_list = selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li/span[1]/text()')
+            trade_list_inner = selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li/text()')
             for k in range(0, len(lists)):
                 # 1 房屋户型
                 if lists[k] == '房屋户型':
-                    house_type = lists_inner[k]
+                    house_type = str(lists_inner[k]).strip()
                 # 2 所在楼层
                 if lists[k] == '所在楼层':
-                    house_floor = lists_inner[k]
-                # 3 建筑面积
+                    house_floor = str(lists_inner[k]).strip()
+                # 3 计租面积
+                if lists[k] == '计租面积':
+                    rent_area = str(lists_inner[k]).strip()
+                # 4 建筑面积
                 if lists[k] == '建筑面积':
-                    house_construction_area = lists_inner[k]
-                # 4 户型结构
+                    house_construction_area = str(lists_inner[k]).strip()
+                # 5 户型结构
                 if lists[k] == '户型结构':
-                    house_structure = lists_inner[k]
-                # 5 套内面积
+                    house_structure = str(lists_inner[k]).strip()
+                # 6 套内面积
                 if lists[k] == '套内面积':
-                    inside_area = lists_inner[k]
-                # 6 建筑类型
+                    inside_area = str(lists_inner[k]).strip()
+                # 7 建筑类型
                 if lists[k] == '建筑类型':
-                    house_building_type = lists_inner[k]
-                # 7 房屋朝向
+                    house_building_type = str(lists_inner[k]).strip()
+                # 8 房屋朝向
                 if lists[k] == '房屋朝向':
-                    house_facing = lists_inner[k]
-                # 8 建筑结构
+                    house_facing = str(lists_inner[k]).strip()
+                # 9 建筑结构
                 if lists[k] == '建筑结构':
-                    building_structure = lists_inner[k]
-                # 9 装修情况
+                    building_structure = str(lists_inner[k]).strip()
+                # 10 装修情况
                 if lists[k] == '装修情况':
-                    renovation_condition = lists_inner[k]
-                # 10 梯户比例
+                    renovation_condition = str(lists_inner[k]).strip()
+                # 11 梯户比例
                 if lists[k] == '梯户比例':
-                    elevator_ratio = lists_inner[k]
-                # 11 供暖方式
+                    elevator_ratio = str(lists_inner[k]).strip()
+                # 12 供暖方式
                 if lists[k] == '供暖方式':
-                    heating_method = lists_inner[k]
-                # 12 配备电梯
+                    heating_method = str(lists_inner[k]).strip()
+                # 13 配备电梯
                 if lists[k] == '供暖方式':
-                    equipped_with_elevator = lists_inner[k]
-                # 13 用水类型
+                    equipped_with_elevator = str(lists_inner[k]).strip()
+                # 14 用水类型
                 if lists[k] == '用水类型':
-                    type_of_water = lists_inner[k]
-                # 14 用电类型
+                    type_of_water = str(lists_inner[k]).strip()
+                # 15 用电类型
                 if lists[k] == '用电类型':
-                    type_of_electricity = lists_inner[k]
-                # 15 燃气价格
+                    type_of_electricity = str(lists_inner[k]).strip()
+                # 16 燃气价格
                 if lists[k] == '燃气价格':
-                    gas_price = lists_inner[k]
-            trade_list = selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[1]/span/text()')
-            trade_list_inner = selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li/text()')
+                    gas_price = str(lists_inner[k]).strip()
             for m in range(0, len(trade_list)):
                 # 1 挂牌时间
-                if trade_list[i] == '挂牌时间':
-                    listing_time = trade_list_inner[i]
+                if trade_list[m] == '挂牌时间':
+                    listing_time = str(trade_list_inner[m]).strip()
                 # 2 交易权属
-                if trade_list[i] == '交易权属':
-                    transaction_ownership = trade_list_inner[i]
+                if trade_list[m] == '交易权属':
+                    transaction_ownership = str(trade_list_inner[m]).strip()
                 # 3 上次交易
-                if trade_list[i] == '上次交易':
-                    last_transaction = trade_list_inner[i]
+                if trade_list[m] == '上次交易':
+                    last_transaction = str(trade_list_inner[m]).strip()
                 # 4 房屋用途
-                if trade_list[i] == '房屋用途':
-                    usage_of_houses = trade_list_inner[i]
+                if trade_list[m] == '房屋用途':
+                    usage_of_houses = str(trade_list_inner[m]).strip()
                 # 5 房屋年限
-                if trade_list[i] == '房屋年限':
-                    years_of_housing = trade_list_inner[i]
+                if trade_list[m] == '房屋年限':
+                    years_of_housing = str(trade_list_inner[m]).strip()
                 # 6 产权所属
-                if trade_list[i] == '产权所属':
-                    property_rights = trade_list_inner[i]
+                if trade_list[m] == '产权所属':
+                    property_rights = str(trade_list_inner[m]).strip()
                 # 7 抵押信息
-                if trade_list[i] == '抵押信息':
+                if trade_list[m] == '抵押信息':
                     mortgage_information = str(selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[7]/span[2]/text()')[0]).strip()
                 # 8 房本备件
-                if trade_list[i] == '房本备件':
-                    room_spare_parts = trade_list_inner[i]
+                if trade_list[m] == '房本备件':
+                    room_spare_parts = str(selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[8]/text()')[0]).strip()
             details.insert_one({
                 'community_name': community_name,
                 'locate_area': locate_area,
@@ -304,8 +318,9 @@ def get_house_detail():
                 'house_type': house_type,
                 'house_floor': house_floor,
                 'house_construction_area': house_construction_area,
-                'house_structure': house_structure,
                 'inside_area': inside_area,
+                'rent_area': rent_area,
+                'house_structure': house_structure,
                 'house_building_type': house_building_type,
                 'house_facing': house_facing,
                 'building_structure': building_structure,
@@ -329,7 +344,7 @@ def get_house_detail():
                 'url_id': url_id
             })
             print(community_name, locate_area, total_price, unit_price, house_type,
-                  house_floor, house_construction_area, house_structure,
+                  house_floor, house_construction_area, rent_area, house_structure,
                   house_building_type, house_facing,
                   building_structure, renovation_condition,
                   elevator_ratio, heating_method,
