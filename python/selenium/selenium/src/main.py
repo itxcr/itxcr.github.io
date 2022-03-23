@@ -179,9 +179,11 @@ def get_house_detail():
     exist_urls = []
     for i in url_datas:
         all_urls.append(i['url'])
+    print(len(all_urls))
     for i in exist_details:
         exist_urls.append('https://tj.lianjia.com/ershoufang/' + str(i['url_id']) + '.html')
     all_urls = list(set(all_urls).difference(set(exist_urls)))
+    print(len(all_urls))
     driver = get_chromedriver()
     for i in all_urls:
         detail_url = i
@@ -189,7 +191,7 @@ def get_house_detail():
             driver.get(detail_url)
         except Exception:
             driver.get(detail_url)
-        time.sleep(1)
+        # time.sleep(1)
         html = driver.page_source
         selector = etree.HTML(html)
         url_id = detail_url.split('.')[2].split('/')[2]

@@ -185,7 +185,7 @@ def get_house_detail():
             driver.get(detail_url)
         except Exception:
             driver.get(detail_url)
-        time.sleep(1)
+        # time.sleep(1)
         html = driver.page_source
         selector = etree.HTML(html)
         url_id = detail_url.split('.')[2].split('/')[2]
