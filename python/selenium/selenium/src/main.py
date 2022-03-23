@@ -18,6 +18,7 @@ mycol = mydb['tianjin_all_urls']
 nocol = mydb['tianjin_all_urls_zero']
 my_details = mydb['tianjin_detail_urls']
 details = mydb['tianjin_details']
+details_err = mydb['tianjin_details_err']
 city_url = 'https://tj.lianjia.com/ershoufang'
 
 
@@ -284,6 +285,7 @@ def get_house_detail():
                   room_spare_parts, lon, lat, url_id)
         except Exception:
             print('失败:', detail_url)
+            details_err.insert_one({'url': detail_url})
             continue
     driver.quit()
     client.close()

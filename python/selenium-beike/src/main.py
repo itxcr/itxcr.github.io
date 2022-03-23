@@ -3,6 +3,7 @@ import time
 from selenium import webdriver
 import pymongo
 import re
+import json
 
 user_name = 'xcr01'
 user_pwd = 'dagongren'
@@ -18,7 +19,7 @@ mycol = mydb['bk_tianjin_all_urls']
 nocol = mydb['bk_tianjin_all_urls_zero']
 my_details = mydb['bk_tianjin_detail_urls']
 details = mydb['bk_tianjin_details']
-
+bk_details_err = mydb['bk_tianjin_details_err']
 city_url = 'https://tj.ke.com/ershoufang/'
 
 
@@ -153,8 +154,10 @@ def get_final_urls():
         selector = etree.HTML(html)
         for j in range(0, 31):
             try:
-                detail_url = selector.xpath('//*[@id="beike"]/div[1]/div[4]/div[1]/div[4]/ul/li[' + str(j + 1) + '][@class="clear"]/a/@href')[0]
-                detail_title = selector.xpath('//*[@id="beike"]/div[1]/div[4]/div[1]/div[4]/ul/li[' + str(j + 1) + '][@class="clear"]/div/div[1]/a/text()')[0]
+                detail_url = selector.xpath(
+                    '//*[@id="beike"]/div[1]/div[4]/div[1]/div[4]/ul/li[' + str(j + 1) + '][@class="clear"]/a/@href')[0]
+                detail_title = selector.xpath('//*[@id="beike"]/div[1]/div[4]/div[1]/div[4]/ul/li[' + str(
+                    j + 1) + '][@class="clear"]/div/div[1]/a/text()')[0]
                 my_details.insert_one({'title': detail_title, 'url': detail_url})
                 print('成功:', detail_title, detail_url)
             except Exception:
@@ -176,6 +179,29 @@ def get_house_detail():
         html = driver.page_source
         selector = etree.HTML(html)
         url_id = detail_url.split('.')[2].split('/')[2]
+        house_type = ''
+        house_floor = ''
+        house_construction_area = ''
+        house_structure = ''
+        inside_area = ''
+        house_building_type = ''
+        house_facing = ''
+        building_structure = ''
+        renovation_condition = ''
+        elevator_ratio = ''
+        heating_method = ''
+        equipped_with_elevator = ''
+        type_of_water = ''
+        type_of_electricity = ''
+        gas_price = ''
+        listing_time = ''
+        transaction_ownership = ''
+        last_transaction = ''
+        usage_of_houses = ''
+        years_of_housing = ''
+        property_rights = ''
+        mortgage_information = ''
+        room_spare_parts = ''
         try:
             # 获取总价
             total_price = selector.xpath('//*[@class="total"]/text()')[0]
@@ -186,64 +212,90 @@ def get_house_detail():
             # 所在区域
             locate_area = selector.xpath('//*[@class="info"]/a[2]/text()')[0]
             # 通过正则表达式匹配获取经纬度信息
-            pattern = re.compile("resblockPosition:'" + '(.*?)' + "',", re.S)
-            pos = pattern.findall(html)[0]
-            lon = pos.split(',')[0]
-            lat = pos.split(',')[1]
-            # 获取基本信息
-            # 1房屋户型
-            house_type = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[1]/text()')[0]).strip()
-            # 2所在楼层
-            house_floor = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[2]/text()')[0]).strip()
-            # 3建筑面积
-            house_construction_area = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[3]/text()')[0]).strip()
-            # 4户型结构
-            house_structure = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[4]/text()')[0]).strip()
-            # 5建筑类型
-            house_building_type = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[5]/text()')[0]).strip()
-            # 6房屋朝向
-            house_facing = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[6]/text()')[0]).strip()
-            # 7建筑结构
-            building_structure = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[7]/text()')[0]).strip()
-            # 8装修情况
-            renovation_condition = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[8]/text()')[0]).strip()
-            # 9梯户比例
-            elevator_ratio = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[9]/text()')[0]).strip()
-            # 10供暖方式
-            heating_method = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[10]/text()')[0]).strip()
-            # 11配备电梯
-            equipped_with_elevator = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[11]/text()')[0]).strip()
-            # 12用水类型
-            type_of_water = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[12]/text()')[0]).strip()
-            # 13用电类型
-            type_of_electricity = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[13]/text()')[0]).strip()
-            # 14燃气价格
-            gas_price = str(selector.xpath('//*[@class="base"]/div[2]/ul/li[14]/text()')[0]).strip()
-            # 获取交易属性
-            # 1挂牌时间
-            listing_time = str(
-                selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[1]/text()')[0]).strip()
-            # 2交易权属
-            transaction_ownership = str(
-                selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[2]/text()')[0]).strip()
-            # 3上次交易
-            last_transaction = str(
-                selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[3]/text()')[0]).strip()
-            # 4房屋用途
-            usage_of_houses = str(
-                selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[4]/text()')[0]).strip()
-            # 5房屋年限
-            years_of_housing = str(
-                selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[5]/text()')[0]).strip()
-            # 6产权所属
-            property_rights = str(
-                selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[6]/text()')[0]).strip()
-            # 7抵押信息
-            mortgage_information = str(
-                selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[7]/span[2]/text()')[0]).strip()
-            # 8房本备件
-            room_spare_parts = str(
-                selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[8]/text()')[0]).strip()
+            try:
+                txt = selector.xpath('//*[@id="beike"]/script[5]/text()')[0]
+                pattern = re.compile("resblockPosition: '" + "(.*?)" + "',", re.S)
+                pos = pattern.findall(txt)[0]
+                lon = pos.split(',')[0]
+                lat = pos.split(',')[1]
+            except Exception:
+                lon = ''
+                lat = ''
+            lists = selector.xpath('//*[@id="introduction"]/div/div/div[1]/div[2]/ul/li/span/text()')
+            lists_inner = selector.xpath('//*[@id="introduction"]/div/div/div[1]/div[2]/ul/li/text()')
+            for k in range(0, len(lists)):
+                # 1 房屋户型
+                if lists[k] == '房屋户型':
+                    house_type = lists_inner[k]
+                # 2 所在楼层
+                if lists[k] == '所在楼层':
+                    house_floor = lists_inner[k]
+                # 3 建筑面积
+                if lists[k] == '建筑面积':
+                    house_construction_area = lists_inner[k]
+                # 4 户型结构
+                if lists[k] == '户型结构':
+                    house_structure = lists_inner[k]
+                # 5 套内面积
+                if lists[k] == '套内面积':
+                    inside_area = lists_inner[k]
+                # 6 建筑类型
+                if lists[k] == '建筑类型':
+                    house_building_type = lists_inner[k]
+                # 7 房屋朝向
+                if lists[k] == '房屋朝向':
+                    house_facing = lists_inner[k]
+                # 8 建筑结构
+                if lists[k] == '建筑结构':
+                    building_structure = lists_inner[k]
+                # 9 装修情况
+                if lists[k] == '装修情况':
+                    renovation_condition = lists_inner[k]
+                # 10 梯户比例
+                if lists[k] == '梯户比例':
+                    elevator_ratio = lists_inner[k]
+                # 11 供暖方式
+                if lists[k] == '供暖方式':
+                    heating_method = lists_inner[k]
+                # 12 配备电梯
+                if lists[k] == '供暖方式':
+                    equipped_with_elevator = lists_inner[k]
+                # 13 用水类型
+                if lists[k] == '用水类型':
+                    type_of_water = lists_inner[k]
+                # 14 用电类型
+                if lists[k] == '用电类型':
+                    type_of_electricity = lists_inner[k]
+                # 15 燃气价格
+                if lists[k] == '燃气价格':
+                    gas_price = lists_inner[k]
+            trade_list = selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[1]/span/text()')
+            trade_list_inner = selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li/text()')
+            for m in range(0, len(trade_list)):
+                # 1 挂牌时间
+                if trade_list[i] == '挂牌时间':
+                    listing_time = trade_list_inner[i]
+                # 2 交易权属
+                if trade_list[i] == '交易权属':
+                    transaction_ownership = trade_list_inner[i]
+                # 3 上次交易
+                if trade_list[i] == '上次交易':
+                    last_transaction = trade_list_inner[i]
+                # 4 房屋用途
+                if trade_list[i] == '房屋用途':
+                    usage_of_houses = trade_list_inner[i]
+                # 5 房屋年限
+                if trade_list[i] == '房屋年限':
+                    years_of_housing = trade_list_inner[i]
+                # 6 产权所属
+                if trade_list[i] == '产权所属':
+                    property_rights = trade_list_inner[i]
+                # 7 抵押信息
+                if trade_list[i] == '抵押信息':
+                    mortgage_information = str(selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[7]/span[2]/text()')[0]).strip()
+                # 8 房本备件
+                if trade_list[i] == '房本备件':
+                    room_spare_parts = trade_list_inner[i]
             details.insert_one({
                 'community_name': community_name,
                 'locate_area': locate_area,
@@ -253,6 +305,7 @@ def get_house_detail():
                 'house_floor': house_floor,
                 'house_construction_area': house_construction_area,
                 'house_structure': house_structure,
+                'inside_area': inside_area,
                 'house_building_type': house_building_type,
                 'house_facing': house_facing,
                 'building_structure': building_structure,
@@ -286,15 +339,18 @@ def get_house_detail():
                   property_rights, mortgage_information,
                   room_spare_parts, lon, lat, url_id)
         except Exception:
-            print('失败:', detail_url)
+            try:
+                bk_details_err.insert_one({'url': detail_url})
+            except Exception:
+                print(detail_url, '已存在')
             continue
     driver.quit()
     client.close()
 
 
 def main():
-    get_range_price_page_url()
-    get_final_urls()
+    # get_range_price_page_url()
+    # get_final_urls()
     get_house_detail()
 
 
