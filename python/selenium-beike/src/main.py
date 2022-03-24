@@ -343,16 +343,7 @@ def get_house_detail():
                 'lat': lat,
                 'url_id': url_id
             })
-            print(community_name, locate_area, total_price, unit_price, house_type,
-                  house_floor, house_construction_area, rent_area, house_structure,
-                  house_building_type, house_facing,
-                  building_structure, renovation_condition,
-                  elevator_ratio, heating_method,
-                  equipped_with_elevator, type_of_water, type_of_electricity, gas_price,
-                  listing_time, transaction_ownership, last_transaction,
-                  usage_of_houses, years_of_housing,
-                  property_rights, mortgage_information,
-                  room_spare_parts, lon, lat, url_id)
+            print(community_name, locate_area, total_price, house_type, url_id)
         except Exception:
             try:
                 bk_details_err.insert_one({'url': detail_url})

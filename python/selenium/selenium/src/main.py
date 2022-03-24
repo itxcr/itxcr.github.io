@@ -285,7 +285,7 @@ def get_house_detail():
                 'lat': lat,
                 'url_id': url_id
             })
-            print(community_name, locate_area, total_price, house_type,url_id)
+            print(community_name, locate_area, total_price, house_type, url_id)
         except Exception:
             try:
                 details_err.insert_one({'url': detail_url})
