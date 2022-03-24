@@ -285,16 +285,7 @@ def get_house_detail():
                 'lat': lat,
                 'url_id': url_id
             })
-            print(community_name, locate_area, total_price, unit_price, house_type,
-                  house_floor, house_construction_area, house_structure, house_inside_area,
-                  house_building_type, house_facing,
-                  building_structure, renovation_condition,
-                  elevator_ratio, heating_method,
-                  equipped_with_elevator, listing_time,
-                  transaction_ownership, last_transaction,
-                  usage_of_houses, years_of_housing,
-                  property_rights, mortgage_information,
-                  room_spare_parts, lon, lat, url_id)
+            print(community_name, locate_area, total_price, house_type,url_id)
         except Exception:
             try:
                 details_err.insert_one({'url': detail_url})
