@@ -320,6 +320,7 @@ def get_house_detail():
                     room_spare_parts = str(
                         selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[8]/text()')[0]).strip()
             details.insert_one({
+                'catch_time': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
                 'community_name': community_name,
                 'locate_area': locate_area,
                 'total_price': total_price,
