@@ -274,7 +274,7 @@ def get_house_detail():
                 if lists[k] == '供暖方式':
                     heating_method = str(lists_inner[k]).strip()
                 # 13 配备电梯
-                if lists[k] == '供暖方式':
+                if lists[k] == '配备电梯':
                     equipped_with_elevator = str(lists_inner[k]).strip()
                 # 14 用水类型
                 if lists[k] == '用水类型':
