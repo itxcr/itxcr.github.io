@@ -3,7 +3,6 @@ import time
 from selenium import webdriver
 import pymongo
 import re
-import json
 
 user_name = 'xcr01'
 user_pwd = 'dagongren'
@@ -26,12 +25,19 @@ city_url = 'https://tj.ke.com/ershoufang/'
 def get_chromedriver():
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('–disable-infobars')
+    chrome_options.add_argument("--disable-extensions")
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
-    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-    chrome_options.add_argument("--no-first-run")
-    chrome_options.add_argument('blink-settings=imagesEnabled=false')
-    chrome_options.add_argument('page_load_strategy=none')
+    chrome_options.add_argument("--disable-software-rasterizer")
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--ignore-certificate-errors')
+    chrome_options.add_argument('--allow-running-insecure-content')
+    chrome_options.add_argument("blink-settings=imagesEnabled=false")
+    chrome_options.add_argument("--hide-scrollbars")
+    chrome_options.add_argument("--disable-javascript")
+    chrome_options.add_argument("--disable-popup-blocking")
+    chrome_options.add_argument("--log-level=3")
+    chrome_options.add_argument("--disable-cache")
     driver_path = 'D:\softwares\chromedriver.exe'
     return webdriver.Chrome(executable_path=driver_path, chrome_options=chrome_options)
 
@@ -185,7 +191,7 @@ def get_house_detail():
             driver.get(detail_url)
         except Exception:
             driver.get(detail_url)
-        # time.sleep(1)
+        time.sleep(1)
         html = driver.page_source
         selector = etree.HTML(html)
         url_id = detail_url.split('.')[2].split('/')[2]
@@ -306,10 +312,13 @@ def get_house_detail():
                     property_rights = str(trade_list_inner[m]).strip()
                 # 7 抵押信息
                 if trade_list[m] == '抵押信息':
-                    mortgage_information = str(selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[7]/span[2]/text()')[0]).strip()
+                    mortgage_information = str(
+                        selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[7]/span[2]/text()')[
+                            0]).strip()
                 # 8 房本备件
                 if trade_list[m] == '房本备件':
-                    room_spare_parts = str(selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[8]/text()')[0]).strip()
+                    room_spare_parts = str(
+                        selector.xpath('//*[@id="introduction"]/div/div/div[2]/div[2]/ul/li[8]/text()')[0]).strip()
             details.insert_one({
                 'community_name': community_name,
                 'locate_area': locate_area,
@@ -343,7 +352,7 @@ def get_house_detail():
                 'lat': lat,
                 'url_id': url_id
             })
-            print(community_name, locate_area, total_price, house_type, url_id)
+            print(community_name, locate_area, total_price, house_type, url_id, lon, lat)
         except Exception:
             try:
                 bk_details_err.insert_one({'url': detail_url})
@@ -352,7 +361,6 @@ def get_house_detail():
             continue
     driver.quit()
     client.close()
-
 
 def main():
     # get_range_price_page_url()
