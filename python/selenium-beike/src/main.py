@@ -158,6 +158,7 @@ def get_final_urls():
             driver.get(area_url)
         html = driver.page_source
         selector = etree.HTML(html)
+        detail_url = ''
         for j in range(0, 31):
             try:
                 detail_url = selector.xpath(
@@ -353,7 +354,7 @@ def get_house_detail():
                 'lat': lat,
                 'url_id': url_id
             })
-            print(community_name, locate_area, total_price, house_type, url_id, lon, lat)
+            print(total_price)
         except Exception:
             try:
                 bk_details_err.insert_one({'url': detail_url})
