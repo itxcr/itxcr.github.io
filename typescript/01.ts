@@ -135,14 +135,143 @@
 //   return foo + bar + foobar
 // }
 
-function add(...foo:number[]):number {
-  let result = 0
-  for (let i = 0, j = foo.length; i < j; i++) {
-    result += foo[i]
-  }
-  return result
-}
-
-console.log(add(1, 2, 3, 4, 5, 6, 7, 8,100))
+// function add(...foo:number[]):number {
+//   let result = 0
+//   for (let i = 0, j = foo.length; i < j; i++) {
+//     result += foo[i]
+//   }
+//   return result
+// }
+//
+// console.log(add())
 
 // add(2, 3)
+
+// function add() {
+//   let foo = []
+//   for (let i = 0, j = arguments.length; i < j; i++) {
+//     foo[i - 0] = arguments[i]
+//   }
+//   let result = 0
+//   for (let i = 0, j = foo.length; i < j; i++) {
+//     result += foo[i]
+//   }
+//   return result
+// }
+//
+// // @ts-ignore
+// console.log(add(1, 2, 3))
+
+// function add(foo: number[]):number {
+//   let result = 0
+//   for (let i =0, j = foo.length; i < j; i++) {
+//     result += foo[i]
+//   }
+//   return result
+// }
+//
+// console.log(add([]))
+// console.log(add(2))
+// console.log(add(2, 2))
+// console.log(add(2, 2, 2))
+
+// function test(name: string):string    // 重载签名
+// function test(age: number): string    // 重载签名
+// function test(single: boolean):string // 重载签名
+// function test(value: string | number | boolean): string { // 实现签名
+//   switch (typeof value) {
+//     case 'string':
+//       return `My name is ${value}`
+//     case 'number':
+//       return `Im ${value} years old`
+//     case 'boolean':
+//       return value ? `I'm single` : `I'm not single`
+//     default:
+//       console.log('Invalid Operation!')
+//   }
+// }
+
+// interface Document {
+//   createElement(tagName: 'div'):HTMLDivElement
+//   createElement(tagName: 'span'):HTMLSpanElement
+//   createElement(tagName: 'canvas'):HTMLCanvasElement
+//   createElement(tagName: string): HTMLElement
+// }
+
+// function foo2():void {
+//   bar = 0
+//   var bar: number
+//   alert(bar)
+// }
+// foo2()
+
+// var bar = 0; // 全局的
+// (function (global) {
+//     var foo: number = 0 // 在函数作用域中
+//     bar = 1  // 在全局作用域中
+//     console.log(global.bar) // 1
+//     console.log(foo) // 0
+//   })(this)
+//
+// console.log(bar) // 1
+// console.log(foo) // 错误
+
+// class Counter {
+//   private _i:number
+//   constructor() {
+//     this._i = 0
+//   }
+//   get():number {
+//     return this._i
+//   }
+//   set(val: number): void {
+//     this._i = val
+//   }
+//   increment(): void {
+//     this._i ++
+//   }
+// }
+//
+// var counter = new Counter()
+// console.log(counter.get()) // 0
+// counter.set(2)
+// console.log(counter.get()) // 2
+// counter.increment()
+// console.log(counter.get()) // 3
+// console.log(counter._i) // 错误 _i 为私有属性
+
+
+// var Counter = (function () {
+//   var _i:number = 0
+//   function Counter() {
+//
+//   }
+//   Counter.prototype.get = function (){
+//     return _i
+//   }
+//   Counter.prototype.set = function (val: number){
+//     _i = val
+//   }
+//   Counter.prototype.increment = function () {
+//     _i++
+//   }
+//   return Counter
+// })()
+//
+// var a = new Counter()
+// console.log(a.get())
+// a.set(2)
+// console.log(a.get())
+// a.increment()
+// console.log(a.get())
+// console.log(a._i)
+class User {
+  name: string
+  age: number
+}
+
+function getEntities<T>(url: string, cb: (list : T[]) => void):void {
+
+}
+
+getEntities()<User>

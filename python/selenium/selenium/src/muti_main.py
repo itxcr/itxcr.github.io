@@ -16,7 +16,7 @@ class Lianjia:
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('–disable-infobars')
         chrome_options.add_argument("--disable-extensions")
-        # chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--headless')
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument("--disable-software-rasterizer")
         chrome_options.add_argument('--no-sandbox')
@@ -60,7 +60,7 @@ class Lianjia:
                     self.driver.get(url)
                 except Exception:
                     self.driver.get(url)
-                time.sleep(1)
+                time.sleep(2)
                 html = self.driver.page_source
                 selector = etree.HTML(html)
                 try:
