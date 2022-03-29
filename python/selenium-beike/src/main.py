@@ -363,6 +363,7 @@ def get_house_detail():
             continue
     driver.quit()
     client.close()
+    print('抓取结束')
 
 
 def main():
