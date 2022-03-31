@@ -367,8 +367,8 @@ def get_house_detail():
 
 
 def main():
-    # get_range_price_page_url()
-    # get_final_urls()
+    get_range_price_page_url()
+    get_final_urls()
     get_house_detail()
 
 
