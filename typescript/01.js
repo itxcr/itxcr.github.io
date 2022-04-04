@@ -58,34 +58,64 @@
 // principal.greet()
 // principal.teach()
 // principal.manageTeachers()
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var Animal = /** @class */ (function () {
     function Animal() {
     }
     Animal.prototype.eat = function () {
         console.log('eat');
+        return '';
     };
     return Animal;
 }());
-var Mammal = /** @class */ (function () {
+var Mammal = /** @class */ (function (_super) {
+    __extends(Mammal, _super);
     function Mammal() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     Mammal.prototype.breathe = function () {
         console.log('breathe');
+        return '';
+    };
+    Mammal.prototype.move = function () {
+        console.log('move1');
+        return '';
     };
     return Mammal;
-}());
-var WingedAnimal = /** @class */ (function () {
+}(Animal));
+var WingedAnimal = /** @class */ (function (_super) {
+    __extends(WingedAnimal, _super);
     function WingedAnimal() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     WingedAnimal.prototype.fly = function () {
         console.log('fly');
+        return '';
+    };
+    WingedAnimal.prototype.move = function () {
+        console.log('move2');
+        return '';
     };
     return WingedAnimal;
-}());
-var Bat = /** @class */ (function () {
-    function Bat() {
+}(Animal));
+var Bat1 = /** @class */ (function () {
+    function Bat1() {
     }
-    return Bat;
+    return Bat1;
 }());
 function applyMixins(derivedCtor, baseCtors) {
     baseCtors.forEach(function (baseCtor) {
@@ -96,7 +126,9 @@ function applyMixins(derivedCtor, baseCtors) {
         });
     });
 }
-applyMixins(Bat, [Mammal, WingedAnimal]);
-var a = new Bat();
-a.fly();
+applyMixins(Bat1, [WingedAnimal, Mammal]);
+var a = new Bat1();
 a.breathe();
+a.fly();
+a.move();
+a.eat();
