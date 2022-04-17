@@ -1,0 +1,15 @@
+version: '1.0'
+services:
+  jenkins:
+    container_name: 'jenkins'
+    image: jenkins/jenkins:lts
+    restart: always
+    user: jenkins:992
+    ports:
+      - "10050:8080"
+      - "50001:50000"
+      - "10051:10051"
+    volumes:
+      - /www/docker/jenkins/data:/var/jenkins_home
+      - /usr/bin/docker:/usr/bin/docker
+      - /var/run/docker.sock:/var/run/docker.sock
