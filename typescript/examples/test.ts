@@ -1,1 +1,3 @@
-import {UserValidator, TalkValidator} from "./main";
+import UserModel = require('./UserModel')
+let user = new UserModel()
+console.log(user)

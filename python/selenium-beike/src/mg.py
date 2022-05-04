@@ -3,7 +3,7 @@ import time
 from selenium import webdriver
 import pymongo
 import re
-
+import random
 user_name = 'xcr01'
 user_pwd = 'dagongren'
 host = 'www.atlantide.top'
@@ -14,11 +14,11 @@ client = pymongo.MongoClient(
                                                                      port=port,
                                                                      db_name=db_name))
 mydb = client['dagongren']
-mycol = mydb['bk_tianjin_all_urls']
-nocol = mydb['bk_tianjin_all_urls_zero']
-my_details = mydb['bk_tianjin_detail_urls']
-details = mydb['bk_tianjin_details']
-bk_details_err = mydb['bk_tianjin_details_err']
+mycol = mydb['bk_tj_all_urls']
+nocol = mydb['bk_tj_all_urls_err']
+my_details = mydb['bk_tj_detail_urls']
+details = mydb['bk_tj_details']
+bk_details_err = mydb['bk_tj_details_none']
 city_url = 'https://tj.ke.com/ershoufang/'
 
 
@@ -101,7 +101,7 @@ def get_range_price_page_url():
         print('当前需搜索的个数', len(part_range_price_urls), )
         part_range_price_urls = list(set(part_range_price_urls).difference(set(exist_urls)))
         print('排除掉数据库中已存在数据后剩余个数', len(part_range_price_urls))
-        print('已循环', count)
+        print('当前', count)
         if len(part_range_price_urls) == 0:
             continue
         for part_range_price_url in part_range_price_urls:
@@ -118,18 +118,18 @@ def get_range_price_page_url():
                 house_count = selector.xpath('//*[@id="beike"]/div[1]/div[4]/div[1]/div[2]/div[1]/h2/span/text()')[0]
                 if int(house_count) == 0:
                     nocol.insert_one({'area_name': key, 'url': part_range_price_url})
-                    print('中断跳出')
+                    print('当前链接房产数据为0，中断跳出')
                     continue
             except Exception:
                 continue
-            print('数据量:' + str(house_count))
+            print('当前链接数据量:' + str(house_count))
             nums = int(house_count) % 30
             if nums == 0:
                 page_count = int(int(house_count) / 30)
             else:
                 page_count = int(int(house_count) / 30) + 1
             # 构造不同页码的URL
-            print('页数:' + str(page_count))
+            print('当前链接可拼接页数:' + str(page_count))
             for i in range(0, page_count):
                 if i == 0:
                     range_price_page_url = part_range_price_url
@@ -168,7 +168,7 @@ def get_final_urls():
                 my_details.insert_one({'title': detail_title, 'url': detail_url})
                 print('成功:', detail_title, detail_url)
             except Exception:
-                print('失败:' + str(j + 1), detail_url)
+                print('已存在或者拼接错误:' + str(j + 1), detail_url)
                 continue
     driver.quit()
 
@@ -192,7 +192,9 @@ def get_house_detail():
             driver.get(detail_url)
         except Exception:
             driver.get(detail_url)
-        time.sleep(1)
+        a = random.random()
+        print(a)
+        time.sleep(a)
         html = driver.page_source
         selector = etree.HTML(html)
         url_id = detail_url.split('.')[2].split('/')[2]
@@ -367,8 +369,8 @@ def get_house_detail():
 
 
 def main():
-    get_range_price_page_url()
-    get_final_urls()
+    # get_range_price_page_url()
+    # get_final_urls()
     get_house_detail()
 
 
