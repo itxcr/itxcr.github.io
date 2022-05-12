@@ -287,5 +287,352 @@ function * 是用来创建 generator 函数的语法。
 
 调用 generator 函数时会返回一个 generator 对象。generator 对象遵循迭代器接口，即通常所见到的 next、return 和 throw 函数。
 
-generator 函数用于创建懒迭代器，例如下面这个函数可以返回一个无限整数的列表：
+```js
+function* infiniteList() {
+    let i = 0;
+    while (i < 3) {
+        yield i++;
+    }
+}
+const gen = infiniteList();
+console.log(gen.next()); // {value: xxx, done: false
+```
 
+generator 函数用于创建懒迭代器，它在实质上允许一个函数可以暂停执行，比如执行了 gen.next() 后，可以先去做别的事情，再回来继续执行 gen.next()，这样剩余函数的控制权就交给了调用者。
+
+当直接调用 generator 函数时，它并不会执行，只会创建一个 generator 对象。
+
+```js
+function* generator() {
+    console.log('开始');
+    yield 0;
+    console.log('恢复');
+    yield 1;
+    console.log('结束');
+}
+const iterator = generator();
+console.log(iterator.next());
+// 开始
+// { value: 0, done: false }
+console.log(iterator.next());
+// 恢复
+// { value: 1, done: false }
+console.log(iterator.next());
+// 结束
+// { value: undefined, done: true }
+```
+
+- generator 对象只会在调用 next 后才会开始执行
+- 函数在执行到 yield 语句时会暂停并返回 yield 的值
+- 函数在 next 被调用时继续恢复执行
+
+实质上 generator 函数的执行与外部的 generator 对象有关。
+
+除了 yield 传值到外部，也可以通过 next 传值到内部进行调用。
+
+```js
+function *generator() {
+    const who = yield
+    console.log(`hello ${who}`)
+}
+
+const iterator = generator()
+console.log(iterator.next())
+// { value: undefined, done: false }
+console.log(iterator.next('XCR'))
+// hello XCR
+// { value: undefined, done: true }
+```
+
+- 传值前要调用一次 next
+
+以上便是 next 和 return 函数的内容，下面看一下 throw 函数如何处理迭代器内部报错。
+
+下面是 iterator.throw 的例子：
+
+```js
+function *generator() {
+    try {
+        yield 1
+    }catch (error) {
+        console.log(error.message)
+    }
+}
+
+const iterator = generator()
+console.log(iterator.next())
+// { value: 1, done: false }
+console.log(iterator.throw(new Error('发生错误')))
+// 发生错误
+// { value: undefined, done: true }
+```
+
+从上可知，外部是可以对 generator 内部进行干涉的：
+
+- 外部系统可以传值到 generator 函数体中
+- 外部系统可以抛入一个异常到 generator 函数体中
+
+- 传值前要调用一次 next
+
+### 高级类型
+
+#### interface
+
+一个很常用的场景，比如函数传参，除了基本类型和数组外，还常用 字典作为参数，那么应该如何对字典进行类型约束呢，TS 引入了 interface 关键字，为我们提供了表达字典的能力，如下：
+
+```ts
+interface A {
+    a: number,
+    b: string,
+    c: number[]
+}
+
+let a: A
+a.a = 1
+a.b = 'xcr'
+a.c = [1, 2, 3]
+a.d // Property 'd' does not exist on type 'A'.
+```
+
+#### 交叉类型与联合类型
+
+通常意义上交叉类型是指将多个字典类型合并为一个新的字典类型。
+
+基本类型是不会存在交叉的。比如 number 和 string 是不可能有交叉点的，一个类型不可能既是字符串又是数字。所以使用交叉类型时通常是下面这样：
+
+```ts
+type newType = number & string
+let a: newType
+interface A {
+    d: number,
+    z: string
+}
+
+interface B {
+    f: string,
+    g: string
+}
+
+type C = A & B
+let c: C
+```
+
+这里的 type 关键字是用来声明类型变量的。在运行时，与类型相关的代码都会被移除掉，并不会影响到 JS 的执行。
+
+但如果交叉类型中有属性冲突时，如下：
+
+```ts
+type newType = number & string
+let a: newType
+interface A {
+    d: number,
+    z: string
+}
+
+interface B {
+    d: string,
+    g: string
+}
+type C = A & B
+let c: C
+c.d = 1 // Type 'number' is not assignable to type 'never'.
+c.d = '123' // Type 'string' is not assignable to type 'never'.
+```
+
+上面可以看到，d 无论如何赋值都不可能通过类型检查。
+
+但正确使用交叉类型时，它可以合理地将两个不同类型叠加为新的类型，并包含所需要的类型。
+
+如果需要一个变量可能是 number，有可能是 string，要如何做呢？
+
+这个场景也很常见，联合类型便是用于解决这样的问题。
+
+```js
+function padLeft(value, padding) {
+    if (typeof padding === 'number') {
+        return Array(padding + 1).join('') + value;
+    }
+    if (typeof padding === 'string') {
+        return padding + value;
+    }
+    throw new Error('希望获取到 string 或 number' + '获取到的是' + padding);
+}
+console.log(padLeft('Hello World', 4)); // Hello World
+```
+
+padLeft 存在一个问题，padding 参数的类型被指定为 any。也就是说，可以传入一个既不是 number 也不是 string 类型的参数，但是 TS 不报错：
+
+```ts
+console.log(padLeft('Hello world', true))
+// 编译通过，运行时报错
+```
+
+在传统编程语言中可以使用重载解决这样的问题 。
+
+但在 JS 不存在重载，手动判断类型操作很常见。这在一定程度上避免了过度设计。
+
+如果希望更准确地描述 padding 类型，就只能让 padding 既可以是 number 又可以是 string ，所以联合类型就非常必要了。
+
+替代掉 any，可以使用联合类型作为 padding 的参数，如下所示：
+
+```ts
+function padLeft(value: string, padding: string | number) {
+    if (typeof padding === 'number') {
+        return Array(padding+1).join(' ')+value
+    }
+    if (typeof padding === 'string') {
+        return padding + value
+    }
+    throw new Error('希望获取到 string 或 number' + '获取到的是' + padding)
+}
+
+console.log(padLeft('Hello world', true)) 
+// Argument of type 'boolean' is not assignable to parameter of type 'string | number'.
+```
+
+联合类型表示一个变量可以是几种类型之一。用竖线 `|` 分隔每个类型，所以 `number | string | boolean` 表示一个值可以是 number、string 或 boolean。
+
+如果一个值是联合类型，只能访问它们共有的属性。来看一个例子：
+
+```ts
+interface A {
+    a: number,
+    b: string
+}
+
+interface B {
+    b: string,
+    c: number
+}
+
+interface C {
+    b: string,
+    f: number
+}
+
+let test: A | B | C
+test.a = 1 // Property 'a' does not exist on type 'A | B | C'. Property 'a' does not exist on type 'B'.
+test.b = ''
+```
+
+在 interface 中，联合类型取得是交集，交叉类型是并集。这名上去跟名字有冲突，然而它们在基本类型又不是这样表现的。
+
+- TS 只会帮助在编译时做类型检查，并不确保代码在运行时中的安全
+
+#### 类型保护与区分类型
+
+联合类型可用于把值区分为不同的类型。想确切了解某个值的类型要怎么办，首先想到类型断言，先看一个例子：
+
+```ts
+interface Teacher {
+    teach():void
+}
+
+interface Student {
+    learn(): void
+}
+
+function getPerson() : Teacher | Student {
+    return {} as Teacher // 假设构造了一个 teacher 或 student
+}
+
+const person = getPerson() // person: Teacher | Student
+person.learn(); // Property 'learn' does not exist on type 'Teacher | Student'. Property 'learn' does not exist on type 'Teacher'
+
+person.teach(); // Property 'teach' does not exist on type 'Teacher | Student'. Property 'teach' does not exist on type 'Student'.
+```
+
+由于函数的返回值类型已经预设为 Teacher | Student，所以后续 person 的类型也推导为 Teacher | Student。这导致并不能只调用交集中的函数，所以只能使用类型断言来强制类型推测，如下所示：
+
+```ts
+interface Teacher {
+    teach():void
+}
+
+interface Student {
+    learn(): void
+}
+
+function getPerson() : Teacher | Student {
+    return {} as Teacher // 假设构造了一个 teacher 或 student
+}
+
+const person = getPerson();
+(<Student>person).learn(); 
+(<Teacher>person).teach(); 
+```
+
+虽然可以顺利使用在 Student 和 Teacher 中的函数了，但每次都必须写上类型断言是一件非常麻烦的事。
+
+所以在 TS 中有一种类型保护机制，可以让代码可读性得到提升，同时还能减少使用繁琐的类型断言。
+
+要实现类型保护，只需要简单的定义一个函数就可以，但返回值必须是一个主谓宾语句，如下：
+
+```ts
+function isTeacher(person: Teacher | Student):person is Teacher {
+    return (<Teacher>person).teach !== undefined
+}
+```
+
+person is Teacher 就是类型保护语句，说明参数必须来自于当前函数签名里的一个参数名。
+
+每当使用一些变量调用 isTeacher 时，TS 就会将变量指定为类型保护中的类型。但这个类型与变量的原始类型是兼容的。
+
+```ts
+interface Teacher {
+    teach(): void
+}
+
+interface Student {
+    learn(): void
+}
+
+function getPerson(): Teacher | Student {
+    return {} as Teacher // 假设构造了一个 teacher 或 student
+}
+
+const person = getPerson();
+
+function isTeacher(person: Teacher | Student): person is Teacher {
+    return (<Teacher>person).teach !== undefined
+}
+
+if (isTeacher(person)) {
+    person.teach()
+} else {
+    person.learn()
+}
+```
+
+TS 很聪明，它不仅能知道在 if 分支中的 Teacher 类型，还能推测出 else 分支中的必然是 Person 类型，这都得益于类型保护的实现。
+
+#### typeof 与 instanceof
+
+现在可以使用类型保护来重构一开始的 padLeft 代码了。可以考虑用联合类型书写 padLeft 代码，像下面这样：
+
+```ts
+function isNumber(padding: number | string): padding is number {
+    return typeof padding === 'number'
+}
+
+function isString(padding: number | string): padding is string {
+    return typeof padding === "string"
+}
+
+function padLeft(value: string, padding: number | string) {
+    if (isNumber(padding)) {
+        return Array(padding + 1).join('') + value
+    }
+    if (isString(padding)) {
+        return padding + value
+    }
+    throw new Error('希望获取到 string 或 number' + '获取到的是' + padding)
+}
+
+console.log(padLeft('XCR', '123')) //123XCR
+console.log(padLeft('XCR', 123)) // XCR
+```
+
+但每次 typeof 进行类型判断都必须定义一个函数怒，又显得繁琐了。幸运的是 TS 会将 `typeof padding === 'number'` 视为一种类型保护，可以继续保持之前的代码结构。
+
+typeof 在 TS 中使用时，只有匹配到基本类型时，才会启用类型保护。如果使用 `typeof padding === 'xcr'` ，它不会将这识别为一个有效类型，也不会启用有效的类型保护。
