@@ -16,3 +16,4 @@ function padLeft(value, padding) {
 console.log(padLeft('XCR', '123')); //123XCR
 console.log(padLeft('XCR', 123)); // XCR
 
+console.log(Array.isArray(123))
