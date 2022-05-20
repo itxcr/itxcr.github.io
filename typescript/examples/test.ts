@@ -1,20 +1,14 @@
-function isNumber(padding: number | string): padding is number {
-    return typeof padding === 'xcr'
+interface Person {
+    name: string
+    age: number
 }
 
-function isString(padding: number | string): padding is string {
-    return typeof padding === "string"
+type Readonly<T> = {
+    readonly [P in keyof T]: T[P]
 }
 
-function padLeft(value: string, padding: number | string) {
-    if (isNumber(padding)) {
-        return Array(padding + 1).join('') + value
-    }
-    if (isString(padding)) {
-        return padding + value
-    }
-    throw new Error('希望获取到 string 或 number' + '获取到的是' + padding)
+type Partial<T> = {
+    [P in keyof T]?: T[P]
 }
-
-console.log(padLeft('XCR', '123')) //123XCR
-console.log(padLeft('XCR', 123)) // XCR
+type PersonPartial = Partial<Person>
+type ReadonlyPerson = Readonly<Person>

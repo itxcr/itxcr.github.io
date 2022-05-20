@@ -1,19 +1,9 @@
-function isNumber(padding) {
-    return typeof padding === 'number';
+function pluck(obj, names) {
+    return names.map(function (name) { return obj[name]; });
 }
-function isString(padding) {
-    return typeof padding === "string";
-}
-function padLeft(value, padding) {
-    if (isNumber(padding)) {
-        return Array(padding + 1).join('') + value;
-    }
-    if (isString(padding)) {
-        return padding + value;
-    }
-    throw new Error('希望获取到 string 或 number' + '获取到的是' + padding);
-}
-console.log(padLeft('XCR', '123')); //123XCR
-console.log(padLeft('XCR', 123)); // XCR
-
-console.log(Array.isArray(123))
+var person = {
+    name: 'xcr',
+    age: 18
+};
+console.log(pluck(person, ["name"]));
+pluck(person, ["profession"]); // Type '"profession"' is not assignable to type 'keyof Person'.

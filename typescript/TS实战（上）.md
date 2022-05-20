@@ -633,6 +633,188 @@ console.log(padLeft('XCR', '123')) //123XCR
 console.log(padLeft('XCR', 123)) // XCR
 ```
 
-但每次 typeof 进行类型判断都必须定义一个函数怒，又显得繁琐了。幸运的是 TS 会将 `typeof padding === 'number'` 视为一种类型保护，可以继续保持之前的代码结构。
+但每次 typeof 进行类型判断都必须定义一个函数，这又显得繁琐了。幸运的是 TS 会将 `typeof padding === 'number'` 视为一种类型保护，可以继续保持之前的代码结构。
 
 typeof 在 TS 中使用时，只有匹配到基本类型时，才会启用类型保护。如果使用 `typeof padding === 'xcr'` ，它不会将这识别为一个有效类型，也不会启用有效的类型保护。
+
+除了 typeof 外，instanceof 也可以起到类型保护的作用。instanceof 相较于 typeof，其类型保护更为精细，是通过构造函数来区分类型的一种方式。
+
+如：
+
+```ts
+interface Person {
+    test(): void
+}
+
+class Teacher implements Person {
+    constructor(name: string) {
+    }
+    talk() {
+    }
+}
+
+class Student implements Person {
+    constructor(name: string, age: number, classRoom: string) {
+    }
+    talk() {
+    }
+}
+function getPerson() {
+    return Math.random() < 0.5 ? new Teacher('张老师') : new Student('xcr', 18, '一班')
+}
+
+const person = getPerson() // Teacher | Student
+if (person instanceof Teacher) {
+    person // Teacher
+}
+if (person instanceof  Student) {
+    person // Student
+}
+```
+
+可以看出，instanceof 在类型的使用上可以将类作为比较对象，从而实现类型保护。
+
+#### 类型别名
+
+在 TS 中，可以使用 type 关键字来描述类型变量：
+
+```ts
+type Age = number
+type AgeCenter = () => Age
+
+function getAge(age: AgeCenter): Age {
+    return arg()
+}
+```
+
+但是别名并不在类型系统中新建一个基本类型。使用别名只是为某个类型或者类型集合创建了一个新名字。虽然给基本类型起一个别名通常没什么用，但这样可以减少文档的编写量。
+
+类型别名也可以是范型：
+
+```ts
+type Person<T> = {
+    age: T
+}
+```
+
+也可以使用类型别名在属性里引用自己，这看起来像递归：
+
+```ts
+type Person<T> = {
+    name: T
+    mother: Person<T>,
+    father: Person<T>
+}
+```
+
+这使得类型编排非常复杂。当然，这种复杂性是为了描述的准确性。正如上面，mother 和 father 肯定也是 person。这样在代码中看上去有点不可思议的操作，在现实世界却是非常合理的。
+
+#### 字面量类型
+
+```ts
+type Profession = 'teacher'
+```
+
+通常它是结合联合类型使用的。
+
+可以尝试使用这个特性，达到类似枚举类型的效果：
+
+```ts
+type Profession = 'teacher' | 'doctor' | 'accountant'
+function personCreator(profession: Profession) {
+}
+personCreator('teacher')
+personCreator('doctor')
+personCreator('accountant')
+personCreator('programmer') // Argument of type '"programmer"' is not assignable to parameter of type 'Profession'.
+```
+
+只能从三种允许的字符串中选择一种作为参数，这一点就完全是联合类型的内容了。
+
+当然数字字面量类型也是存在的，用法一致。
+
+#### 索引类型与映射类型
+
+索引类型与映射类型是相对复杂的内容。使用索引类型，编译器就能检查使用了动态属性名的代码。
+
+例如，一个 Lodash 中常见的 pluck 函数，就是从对象中选取属性的子集。下面是 pluck 函数的简化版示例：
+
+```ts
+function pluck(obj, names) {
+    return names.map(name => obj[name])
+}
+```
+
+如果需要在 TS 中使用这个函数，要通过 索引类型查询 和 索引访问 操作符：
+
+```ts
+function pluck<T, K extends keyof T>(obj: T, names: K[]): T[K][] {
+    return names.map(name => obj[name])
+}
+
+interface Person {
+    name: string
+    age: number
+}
+
+const person: Person = {
+    name: 'xcr',
+    age: 18
+}
+console.log(pluck(person, ["name"]))
+pluck(person, ["profession"]) // Type '"profession"' is not assignable to type 'keyof Person'.
+```
+
+编译器会检查传入的值是否是 Person 属性的一部分。上面代码首先看范型，这里有 T 和 K 两种类型，根据类型判断，第一个 obj 就是 person，类型会被推断为 Person；而第二个数组参数的类型推断可以从右往左进行阅读。keyof 关键字可以获取 T，也就是 Person 的所有属性名，即 ['name', 'age']。最后，extends 关键字让范型 K 继承了 Person 的所有属性名，即 ['name', 'age'] 。
+
+依托于 keyof 关键字完成了类型索引。
+
+再来看返回值，返回值的类型是 `T[K][] ` ，它实际表述的意思是，变量 T 取属性 K 的值的数组，其中 T[k] 就是索引访问操作符。
+
+这样强大的功能保证了代码的动态性和准确性，也让代码提示变得更加丰富。
+
+还有一种场景是将一个已知类型的每个属性都变为可选的，比如这样使用问号：
+
+```ts
+interface Person {
+    name?: string
+    age?: number
+}
+```
+
+在实例化 Person 时，不必给每个属性都赋值。
+
+想要 Person 的属性值都是只读不可修改的，如下所示：
+
+```ts
+interface Person {
+    readonly name: string
+    readonly age: number
+}
+```
+
+TS 提供了从旧类型中创建新类型的一种方式，也就是 “映射类型”。在映射类型里，新类型以相同的形式去转换旧类型里的每个属性。例如，可以令每个属性成为只读类型或可选类型：
+
+```ts
+type Readonly<T> = {
+    readonly [P in keyof T]: T[P]
+}
+
+type Partial<T> = {
+    [P in keyof T]?: T[P]
+}
+```
+
+使用方式如下：
+
+```ts
+type PersonPartial = Partial<Person>
+type ReadonlyPerson = Readonly<Person>
+```
+
+TS 中内置了 Readonly 和 Partial，所以不需要手动声明实现。
+
+内置的类型还有 Required、Pick、Record、Exclude、Extract、NonNullable 等。
+
+#### 类型推导
+
