@@ -818,3 +818,81 @@ TS 中内置了 Readonly 和 Partial，所以不需要手动声明实现。
 
 #### 类型推导
 
+类型推导就是在没有明确指出类型的地方，TS 编译器会自己去推测出当前变量的类型。
+
+如：`let a = 1`
+
+并没有显示地指明 a 的类型，所以编译器需要自己通过结果反向推测变量 a 的类型是 number。这种推断发生在变量初始化或者函数有返回值时。
+
+大多数情况下，类型推导是这样直接了当的。但也有很复杂的情况，比如上一节，需要去匹配参数来推测类型。
+
+当需要从几个表达式中推断类型时，会使用这些表达式的类型来推断出一个最合适的通用类型集。如：
+
+`let a = [0, 'hello', null] // (string | number)[]`
+
+为了推断 a 的类型，必须考虑所有元素的类型。这里有三个选择：number、string 和 null。计算通用类型算法会考虑所有的候选类型，并给出一个兼容所有候选类型的类型，这个例子是（string | number)[]。
+
+TS 里的类型兼容性是基于结构子类型的，如下：
+
+```ts
+interface Person {
+    age: number
+}
+
+class Father {
+    age: number
+}
+
+let person: Person
+person = new Father()
+```
+
+在以上类型中，只要满足了子结构的描述，那么他就可以通过编译时检查。所以，TS 的设计思想并不是满足正确的类型，而是满足能正确通过编译的类型。这就造成了运行时和编译时可能存在类型偏差。
+
+所以 TS 的类型系统允许某些在编译时无法进行安全确认的类型操作。当一个类型系统具有此属性时，被认为是 ”不可靠”的。而 TS 允许这种行为是经过仔细思考的。
+
+TS 结构化类型系统的基本规则是，如果 x 要兼容 y，那么 y 至少具有与 x 相同的属性。例如：
+
+```ts
+interface Person {
+    name: string
+}
+
+let person: Person
+const xcr = {name: 'xcr', age: 22}
+person = xcr
+```
+
+当 xcr 赋值给 person 时，编译器会去检查 person 中的每个属性，看是否能在 xcr 中也找到对应的属性。编译器发现 xcr 中有 name 属性，那它就是合理的，即便事实上并不准确。
+
+检查函数参数时也使用了相同的规则，比如：
+
+```ts
+function greetTo(person: Person) {
+    console.log("hello" + person.name)
+}
+
+greetTo(xcr) // OK
+```
+
+注意，xcr 有个 name 属性，但并不会引发 TS 报错，因为 TS 只会检查是否符合 Person 的类型标准。
+
+这个比较过程是递归进行的，检查每个成员及子成员。
+
+相对来讲，在比较原始类型和对象类型的时候是容易理解的；而在判断两个函数返回值是否相同时，TS 比对的是函数签名。
+
+一个函数里面包含了参数及返回值，可以看下面例子：
+
+```ts
+let fun1 = (a: number) => 0
+let fun2 = (b: number, s: string) => 0
+fun2 = fun1
+fun1 = fun2
+// Type '(b: number, s: string) => number' is not assignable to type '(a: number) => number'.
+```
+
+要查看 fun1 是否能赋值给 fun2，首先看它们的参数列表。fun1 每个参数必须在 fun2 里找到对应类型的参数。注意，参数的名字相同与否无所谓，只看它们的类型。这里，fun1 的每个参数在 fun2 中都能找到对应的参数，所以赋值是允许的。
+
+fun1 = fun2 会出现赋值错误，因为 fun2 有第二个必填参数，但是 fun1 并没有，所以不允许赋值。
+
+实际上在 JS 中参数忽略是很常见的。比如 Array.map 和 Array.forEach ，并不好要求用到每个参数。

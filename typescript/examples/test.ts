@@ -1,14 +1,4 @@
-interface Person {
-    name: string
-    age: number
-}
-
-type Readonly<T> = {
-    readonly [P in keyof T]: T[P]
-}
-
-type Partial<T> = {
-    [P in keyof T]?: T[P]
-}
-type PersonPartial = Partial<Person>
-type ReadonlyPerson = Readonly<Person>
+let fun1 = (a: number) => 0
+let fun2 = (b: number, s: string) => 0
+fun2 = fun1
+fun1 = fun2
