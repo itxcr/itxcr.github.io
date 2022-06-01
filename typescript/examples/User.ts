@@ -30,3 +30,7 @@ var valueOfThis = {
 const greet = person.greet.bind(valueOfThis)
 greet.call(valueOfThis, '1', '2')
 greet.apply(valueOfThis, [3, 4])
+
+type ReturnType <T extends (...args: any[]) => any> = T extends (...args: any[]) => infer R ? R : any
+let fun1 = (a: number) => ({a, b: 'hello'})
+type Fun1ReturnType = ReturnType<typeof fun1>
