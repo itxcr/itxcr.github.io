@@ -896,3 +896,96 @@ fun1 = fun2
 fun1 = fun2 会出现赋值错误，因为 fun2 有第二个必填参数，但是 fun1 并没有，所以不允许赋值。
 
 实际上在 JS 中参数忽略是很常见的。比如 Array.map 和 Array.forEach ，并不好要求用到每个参数。
+
+再看一个更复杂的情况，叫 ReturnType。
+
+infer 关键字可以帮助引入一个待推断的类型变量，这个待推断的类型变量在推断成立时会写入类型；而在失败时会回退为 any。
+
+### 函数
+
+TS可以创建有名字的函数和匿名函数：
+
+```ts
+// 有名字的函数
+function add1(x, y) {
+    return x + y;
+}
+// 匿名函数
+const add2 = function(x, y){
+    return x + y;
+}
+```
+
+回调函数、promise、async 和 await，这些都是用于控制异步操作的。回调函数是一种相对传统的操作形式，promise 已被现代浏览器所支持，所以使用相对广泛。而 async 和 await 目前大多用于 Node.js 环境中，很少在浏览器环境使用。
+
+#### 定义函数
+
+```ts
+function add1(x: number, y: number):number {
+    return x + y
+}
+
+const add2 = function(x:number, y:number):number {
+    return x + y
+}
+```
+
+可以给每个参数添加类型之后，再为函数添加返回值类型。不过 TS 能根据返回值自动推断出类型，因此通常省略它，除非必要的时候。
+
+也可以给一个变量赋值一个函数类型：
+
+```ts
+let add2:(x:number, y:number) => number
+```
+
+#### 参数
+
+##### 可选参数
+
+TS 里的每个函数参数都必须有值。如果允许的话，也可以传递 undefined 或者 null 值，这里强调参数必须一一对应：
+
+```ts
+function buildName(firstName: string, lastName: string) {
+    return firstName + ' ' + lastName
+}
+```
+
+参数多一个或者少一个都是不能通过编译时检查的，可以使用问号解决：
+
+```ts
+function buildName(firstName: string, lastName?:string) {
+    if(lastName) {
+        return firstName + " " + lastName
+    }
+    return firstName
+}
+```
+
+可选参数必须跟在必要参数的后面，如果想让 `firstName` 是可选的，那么就必须调整参数位置，把 `firstName` 放在最后面。
+
+##### 默认参数
+
+在 TS 中，也可以为参数提供一个默认值。当用户没有传递这个参数或传递的值是 undefined 时，则称为有默认初始化值的参数。
+
+##### 剩余参数
+
+在 TS 中，想同时操作多个参数，或者不知道有多少参数传递进来。可以将所有参数收集到一个变量中，加省略号即可：
+
+```ts
+function buoldName(firstName: string, ...names: string[]) {
+    return firstName + ' ' + names.join('')
+}
+```
+
+可将剩余参数看成个数不限的可选参数：可以一个都没有，也可以有很多个。编译器创建一个参数数组用来存储这些剩余参数。
+
+省略号也可以在函数类型定义上使用：
+
+```ts
+let buildNameFun: (firstName: string, ...names: string[]) => string;
+```
+
+#### 回调函数和 promise
+
+使用回调函数来创建异步代码，会使代码的可读性变得非常糟糕。
+
