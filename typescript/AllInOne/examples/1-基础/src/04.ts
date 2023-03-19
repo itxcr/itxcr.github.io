@@ -140,15 +140,15 @@ function isTrue(type:check) {
 
 
 // Vue3的 自定义守卫使用 any
-export function isRef(r: any): r is Ref{
-    return Boolean(r && r.__v_isRef === true) // any 类型的 r 参数 在函数内部获取属性
-}
+// export function isRef(r: any): r is Ref{
+//     return Boolean(r && r.__v_isRef === true) // any 类型的 r 参数 在函数内部获取属性
+// }
 
 
 // Vue3 的 ref 的 unknown 参数
-function ref(value?: unknown) {
-    return createRef(value) // 函数内部只用于再次传递值，不获取属性
-}
+// function ref(value?: unknown) {
+//     return createRef(value) // 函数内部只用于再次传递值，不获取属性
+// }
 
 export {}
 
