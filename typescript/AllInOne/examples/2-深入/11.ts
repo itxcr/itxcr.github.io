@@ -1,4 +1,3 @@
-```ts
 class StringUtil {
     static trimSpace(str: string) {
         return str.replace(/\s+/g, "");
@@ -41,5 +40,3 @@ const p = new People('xcr', 'test')
 p.doEat('x  x  x', 'p  p  p')
 
 export {}
-```
-
