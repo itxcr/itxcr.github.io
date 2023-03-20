@@ -1,0 +1,9 @@
+// 可变元组
+let customers:[string, number, string, ...any[]] = ['xcr', 5000, '5000', 5000, 5000]
+
+// 可变元组解构
+let [name, age, desc, ...rest]:[string, number, string, ...any[]] = ['xcr', 18, '5000', 5000, 5000, 'test']
+console.log(rest) // [ 5000, 5000 ]
+
+export {}
+
