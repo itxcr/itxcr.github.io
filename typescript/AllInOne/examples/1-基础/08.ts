@@ -1,0 +1,11 @@
+let obj = {username: 'xcr', age: 18}
+let obj1:object = {username: 'xcr', age: 18}
+let username = 'username'
+const username1 = 'username'
+
+let u = obj['username']
+let u1 = obj[username]
+let u2 = obj[username1]
+let u3 = obj1[username1]
+
+export {}
