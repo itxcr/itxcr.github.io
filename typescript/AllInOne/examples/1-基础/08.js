@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var obj = { username: 'xcr', age: 18 };
+var obj1 = { username: 'xcr', age: 18 };
+var username = 'username';
+var username1 = 'username';
+var u = obj['username'];
+var u1 = obj[username];
+var u2 = obj[username1];
+var u3 = obj1[username1];
